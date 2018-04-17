@@ -1,13 +1,14 @@
 (ns importer.core
-  (:require [importer.expenses :as exp]))
+  (:require [importer.expenses :as exp])
+  (:require [cheshire.core :refer :all]))
 
-(defn foo
+(defn import
   []
-  (println (exp/get-payers))
+  (println (generate-string (exp/load-expenses (exp/get-resourcefile-path "expensedb.dat")) {:pretty true}))
   (println "---")
-  (println (exp/get-types))
-  (println "---")  
-  (println (exp/load-expenses (exp/get-resourcefile-path "expensedb.dat"))))
+  (println (generate-string (exp/get-payers)))
+  (println "---")
+  (println (generate-string (exp/get-types) {:pretty true})))
 
 (defn -main []
-  (foo))
+  (import))
