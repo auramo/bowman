@@ -5,4 +5,5 @@ node_modules
 dist
 .tmp
 .env
+data-to-import
 
