@@ -45,7 +45,6 @@
  (map #(read-string %) (read-lines filename)))
 
 (defn load-expenses [filename]
-  (println "filename " filename)
   (let [expense-seq (expenses-str-to-date (load-expense-seq filename))]
     (apply hash-map
            (interleave (map #(:id %) expense-seq) expense-seq))))
