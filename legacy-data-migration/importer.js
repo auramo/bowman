@@ -20,6 +20,7 @@ const checkFiles = () => {
 
 const deleteAll = async () => {
   await db.query("DELETE FROM payment_type")
+  await db.query("DELETE FROM payment")
 }
 
 const insertPaymentType = async ([paymentType, description]) => {
@@ -40,12 +41,16 @@ const importPaymentTypes = async () => {
   return R.fromPairs(mappedPaymentTypes)
 }
 
+const importPayments = async (paymentTypes, userMappings) => {}
+
 const doImport = async () => {
   console.log("Deleting existing data")
   await deleteAll()
   console.log("Starting to import JSON data...")
   checkFiles()
   const types = await importPaymentTypes()
+  const userMappings = JSON.parse(fs.readFileSync(userMappingFile))
+  await importPayments(types, userMappings)
   console.log("payment types", types)
 }
 
