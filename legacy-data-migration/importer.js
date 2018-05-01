@@ -32,18 +32,24 @@ const insertPaymentType = async ([paymentType, description]) => {
   return [paymentType, { description, id: result.id }]
 }
 
-const insertPayment = async (payment, paymentTypeId, userId) => {
+const insertPayment = async (
+  payment,
+  paymentTypeId,
+  userId,
+  paymentGroupId
+) => {
   await db.query(
-    `INSERT INTO payment (id, amount_cents, payment_date, description, user_account_id, payment_group_id)
+    `INSERT INTO payment (id, amount_cents, payment_date, payment_type_id, description, user_account_id, payment_group_id)
      VALUES
-     ($1, $2, $3, $4, $5, $6)`,
+     ($1, $2, $3, $4, $5, $6, $7)`,
     [
       payment.id,
       payment.amountcents,
       new Date(payment.date),
+      paymentTypeId,
       payment.description,
       userId,
-      1
+      paymentGroupId
     ]
   )
 }
@@ -58,7 +64,7 @@ const importPaymentTypes = async () => {
   return R.fromPairs(mappedPaymentTypes)
 }
 
-const importPayments = async (paymentTypes, userMappings) => {
+const importPayments = async (paymentTypes, userMappings, paymentGroupId) => {
   const payments = JSON.parse(fs.readFileSync(paymentsFile))
   for (const [uuid, payment] of R.toPairs(payments)) {
     const userId = userMappings[payment.payerid]
@@ -67,19 +73,23 @@ const importPayments = async (paymentTypes, userMappings) => {
     assert(paymentType, "No payment type found")
     console.log("Importing payment:")
     console.log(payment)
-    await insertPayment(payment, paymentType.id, userId)
+    await insertPayment(payment, paymentType.id, userId, Number(paymentGroupId))
     console.log("Imported!")
   }
 }
 
 const doImport = async () => {
+  if (process.argv.length < 3) {
+    console.log(`Usage ${process.argv[1]} <payment group id>`)
+    process.exit(1)
+  }
   console.log("Deleting existing data")
   await deleteAll()
   console.log("Starting to import JSON data...")
   checkFiles()
   const types = await importPaymentTypes()
   const userMappings = JSON.parse(fs.readFileSync(userMappingFile))
-  await importPayments(types, userMappings)
+  await importPayments(types, userMappings, process.argv[2])
 }
 
 doImport()

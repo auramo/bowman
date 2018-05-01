@@ -1,4 +1,4 @@
-CREATE TABLE payment_type (id BIGSERIAL, description TEXT);
+CREATE TABLE payment_type (id BIGSERIAL PRIMARY KEY, description TEXT);
 
 CREATE TABLE payment_group(
   id BIGSERIAL PRIMARY KEY
@@ -15,6 +15,7 @@ CREATE TABLE payment (
   amount_cents BIGINT,
   payment_date DATE,
   description TEXT,
+  payment_type_id BIGINT NOT NULL REFERENCES payment_type(id),
   user_account_id BIGINT NOT NULL REFERENCES user_account (id),
   payment_group_id BIGINT NOT NULL REFERENCES payment_group (id)
 );
