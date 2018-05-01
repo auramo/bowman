@@ -10,7 +10,7 @@ CREATE TABLE payment_group_user(
   UNIQUE(user_account_id, payment_group_id)
 );
 
-CREATE TABLE payments (
+CREATE TABLE payment (
   id UUID PRIMARY KEY,
   amount_cents BIGINT,
   payment_date DATE,
