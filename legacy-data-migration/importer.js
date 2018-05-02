@@ -6,22 +6,23 @@ const Promise = require("bluebird")
 const R = require("ramda")
 const assert = require("assert")
 
-const typesFile = "data-to-import/payment-types.json"
-const payersFile = "data-to-import/payers.json"
-const paymentsFile = "data-to-import/expenses.json"
-const userMappingFile = "data-to-import/user-mapping.json"
+const typesFile = "payment-types.json"
+const payersFile = "payers.json"
+const paymentsFile = "expenses.json"
+const userMappingFile = "user-mapping.json"
 const importFiles = [typesFile, payersFile, paymentsFile, userMappingFile]
 
-const checkFiles = () => {
+const checkFiles = dataDir => {
   for (const importFile of importFiles) {
-    if (!fs.existsSync(importFile))
-      throw new Error(`Missing required import file ${importFile}`)
+    const importFilePath = `${dataDir}/${importFile}`
+    if (!fs.existsSync(importFilePath))
+      throw new Error(`Missing required import file ${importFilePath}`)
   }
 }
 
 const deleteAll = async () => {
-  await db.query("DELETE FROM payment_type")
   await db.query("DELETE FROM payment")
+  await db.query("DELETE FROM payment_type")
 }
 
 const insertPaymentType = async ([paymentType, description]) => {
@@ -54,8 +55,8 @@ const insertPayment = async (
   )
 }
 
-const importPaymentTypes = async () => {
-  const types = JSON.parse(fs.readFileSync(typesFile))
+const importPaymentTypes = async dataDir => {
+  const types = JSON.parse(fs.readFileSync(`${dataDir}/${typesFile}`))
   const paymentTypePairs = R.toPairs(types)
   const mappedPaymentTypes = await Promise.mapSeries(
     paymentTypePairs,
@@ -64,8 +65,13 @@ const importPaymentTypes = async () => {
   return R.fromPairs(mappedPaymentTypes)
 }
 
-const importPayments = async (paymentTypes, userMappings, paymentGroupId) => {
-  const payments = JSON.parse(fs.readFileSync(paymentsFile))
+const importPayments = async (
+  paymentTypes,
+  userMappings,
+  dataDir,
+  paymentGroupId
+) => {
+  const payments = JSON.parse(fs.readFileSync(`${dataDir}/${paymentsFile}`))
   for (const [uuid, payment] of R.toPairs(payments)) {
     const userId = userMappings[payment.payerid]
     assert(userId, "No userid found for payment")
@@ -79,17 +85,22 @@ const importPayments = async (paymentTypes, userMappings, paymentGroupId) => {
 }
 
 const doImport = async () => {
-  if (process.argv.length < 3) {
-    console.log(`Usage ${process.argv[1]} <payment group id>`)
+  if (process.argv.length < 4) {
+    console.log(`Usage ${process.argv[1]} <data dir> <payment group id>`)
     process.exit(1)
   }
+  const dataDir = process.argv[2]
+  const paymentGroupId = process.argv[3]
+
   console.log("Deleting existing data")
   await deleteAll()
   console.log("Starting to import JSON data...")
-  checkFiles()
-  const types = await importPaymentTypes()
-  const userMappings = JSON.parse(fs.readFileSync(userMappingFile))
-  await importPayments(types, userMappings, process.argv[2])
+  checkFiles(dataDir)
+  const types = await importPaymentTypes(dataDir)
+  const userMappings = JSON.parse(
+    fs.readFileSync(`${dataDir}/${userMappingFile}`)
+  )
+  await importPayments(types, userMappings, dataDir, paymentGroupId)
 }
 
 doImport()
