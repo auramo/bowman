@@ -2617,6 +2617,10 @@ indexof@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/indexof/-/indexof-0.0.1.tgz#82dc336d232b9062179d05ab3293a66059fd435d"
 
+infestines@^0.4.4:
+  version "0.4.7"
+  resolved "https://registry.yarnpkg.com/infestines/-/infestines-0.4.7.tgz#dd323da309001665668f62d139561431b71cf256"
+
 infestines@^0.4.5:
   version "0.4.5"
   resolved "https://registry.yarnpkg.com/infestines/-/infestines-0.4.5.tgz#44ec6b226d66c7f34c292f6f6d2dcbb194ac1231"
@@ -2973,6 +2977,19 @@ jsprim@^1.2.2:
     extsprintf "1.3.0"
     json-schema "0.2.3"
     verror "1.10.0"
+
+kefir.atom@^5.5.0:
+  version "5.5.0"
+  resolved "https://registry.yarnpkg.com/kefir.atom/-/kefir.atom-5.5.0.tgz#28128f1183bc59565e7cb05ead5e83a122fb3c5e"
+  dependencies:
+    infestines "^0.4.4"
+    partial.lenses ">=2.2.0"
+
+kefir@^3.8.3:
+  version "3.8.3"
+  resolved "https://registry.yarnpkg.com/kefir/-/kefir-3.8.3.tgz#8e0ab10084ed8a01cbb5d4f7f18a0b859f7b9bd9"
+  dependencies:
+    symbol-observable "1.0.4"
 
 kind-of@^3.0.2, kind-of@^3.0.3, kind-of@^3.2.0:
   version "3.2.2"
@@ -3725,6 +3742,12 @@ parseurl@~1.3.2:
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/parseurl/-/parseurl-1.3.2.tgz#fc289d4ed8993119460c156253262cdc8de65bf3"
 
+partial.lenses@>=2.2.0:
+  version "13.11.0"
+  resolved "https://registry.yarnpkg.com/partial.lenses/-/partial.lenses-13.11.0.tgz#148a56e0b8f2765770d8aebc6000f46fe2807469"
+  dependencies:
+    infestines "^0.4.5"
+
 partial.lenses@^13.1.1:
   version "13.1.1"
   resolved "https://registry.yarnpkg.com/partial.lenses/-/partial.lenses-13.1.1.tgz#672555a007657fa97f86f05aa35950fad3c47e8b"
@@ -4442,18 +4465,18 @@ rc@^1.0.1, rc@^1.1.6, rc@^1.1.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-dom@^16.2.0:
-  version "16.2.0"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.2.0.tgz#69003178601c0ca19b709b33a83369fe6124c044"
+react-dom@^16.3.0:
+  version "16.3.2"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.3.2.tgz#cb90f107e09536d683d84ed5d4888e9640e0e4df"
   dependencies:
     fbjs "^0.8.16"
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
     prop-types "^15.6.0"
 
-react@^16.2.0:
-  version "16.2.0"
-  resolved "https://registry.yarnpkg.com/react/-/react-16.2.0.tgz#a31bd2dab89bff65d42134fa187f24d054c273ba"
+react@^16.3.0:
+  version "16.3.2"
+  resolved "https://registry.yarnpkg.com/react/-/react-16.3.2.tgz#fdc8420398533a1e58872f59091b272ce2f91ea9"
   dependencies:
     fbjs "^0.8.16"
     loose-envify "^1.1.0"
@@ -5133,6 +5156,10 @@ svgo@^0.7.0:
     mkdirp "~0.5.1"
     sax "~1.2.1"
     whet.extend "~0.9.9"
+
+symbol-observable@1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/symbol-observable/-/symbol-observable-1.0.4.tgz#29bf615d4aa7121bdd898b22d4b3f9bc4e2aa03d"
 
 tapable@^0.2.7:
   version "0.2.8"

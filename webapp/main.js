@@ -4,9 +4,15 @@ import ReactDOM from "react-dom"
 
 import routes from "./routes"
 import { Router } from "./router"
+import { StateContext, initialState } from "./state"
 
 function renderApp() {
-  ReactDOM.render(<Router routes={routes} />, document.getElementById("main"))
+  ReactDOM.render(
+    <StateContext.Provider value={initialState}>
+      <Router routes={routes} />
+    </StateContext.Provider>,
+    document.getElementById("main")
+  )
 }
 
 renderApp()
