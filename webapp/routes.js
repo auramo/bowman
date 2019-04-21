@@ -2,19 +2,20 @@ import * as R from 'ramda'
 import React from 'react'
 import Route from 'route-parser'
 
-import view1 from './view1'
-import view2 from './view2'
+import paymentView from './payments/paymentView'
+import newPayment from './payments/newPayment'
+import shoppingList from './shoppingList/shoppingList'
 
 const routeMappings = {
-  '/': () => document.location = '/view1', //Go to the default view
-  '/view1': view1,
-  '/view1/:p1': view1,
-  '/view2': view2
+  '/': () => (document.location = '/payments'), //Go to the default view
+  '/payments': paymentView,
+  '/newPayment': newPayment,
+  '/shoppingList': shoppingList
 }
 
 const routes = R.pipe(
   R.keys,
-  R.map(k => ({route: new Route(k), component: routeMappings[k]}))
+  R.map(k => ({ route: new Route(k), component: routeMappings[k] }))
 )(routeMappings)
 
 export default routes
