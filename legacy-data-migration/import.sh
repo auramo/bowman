@@ -2,10 +2,11 @@
 
 set -e
 
-if [ $# -lt 2 ]; then
-    echo "Usage: <data import dir> <payment group id>"
+if [ $# -lt 3 ]; then
+    echo "Usage: <data import path> <temp data import dir> <payment group id>"
     exit 1
 fi
 
-lein run "$1"
-node importer.js "$1" "$2"
+export RESOURCE_PATH="$1"
+lein run "$2"
+node importer.js "$2" "$3"
