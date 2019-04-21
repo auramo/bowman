@@ -22,7 +22,7 @@ on your computer, I'll guide you through a simpler way to get the DB running:
 
 ```
 PGHOST=localhost
-PGPORT=5432
+PGPORT=5435
 PGDATABASE=bowman
 PGUSER=bowman
 PGPASSWORD=bowman
@@ -32,7 +32,7 @@ We use [dotenv](https://github.com/motdotla/dotenv) for configuration, and the a
 creates the DB configuration for us. Now we'll have to fetch and start the PostgreSQL
 Docker image:
 
-```docker run --name bowman -p 5432:5432 -e POSTGRES_DB=bowman -e POSTGRES_USER=nb -e POSTGRES_PASSWORD=bowman -d postgres:10.2```
+```docker run --name bowman -p 5435:5432 -e POSTGRES_DB=bowman -e POSTGRES_USER=bowman -e POSTGRES_PASSWORD=bowman -d postgres:10.2```
 
 (on Linux you have to prefix the command with sudo)
 
@@ -83,7 +83,7 @@ And click the enable Google+ API -button.
 In order to log in to your system, it has to know about you. Add a desired user by logging into PostgreSQL:
 
 ```
-psql -d bowman -h localhost -U bowman -p 5432
+psql -d bowman -h localhost -U bowman -p 5435
 ```
 
 And inserting the desired user:
