@@ -29,11 +29,16 @@ export default class PaymentView extends React.PureComponent {
     super(props)
     this.state = { payments: [] }
   }
-  componentDidMount() {
-    axios.get('/api/payments').then(response => {
-      this.setState({ payments: response.data.payments })
-    })
+
+  componentDidCatch(x) {
+    console.log('in catch', x)
   }
+
+  async componentDidMount() {
+    const response = await axios.get('/api/payments')
+    this.setState({ payments: response.data.payments })
+  }
+
   render() {
     return (
       <div>
