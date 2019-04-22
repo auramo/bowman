@@ -1,14 +1,16 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import * as R from 'ramda'
 import axios from 'axios'
 import { Link } from './router'
+import { handleError } from './errors/error-dispatch'
 
 const tabs = {
   payments: { label: 'Maksut', location: '/payments' },
   shoppingList: { label: 'Kauppalista', location: '/shoppingList' }
 }
 
-export default class Header extends React.Component {
+class Header extends React.Component {
   constructor(props) {
     super(props)
     this.state = {}
@@ -18,7 +20,7 @@ export default class Header extends React.Component {
     axios
       .get('/api/user/')
       .then(resp => this.setState({ user: resp.data.user }))
-      .catch(err => this.setState({ error: err }))
+      .catch(err => handleError(err))
   }
   render() {
     return (
@@ -34,7 +36,7 @@ export default class Header extends React.Component {
           )}
         </section>
         <section className="navbar-section">
-          {this.state.error ? <span className="label label-error">{this.state.error.toString()}</span> : null}
+          {this.props.error ? <span className="label label-error">{this.props.error.toString()}</span> : null}
           <span className="text-gray mr-2">{R.path(['user', 'name'], this.state)}</span>
           <a className="btn btn-sm mr-2" href="/logout">
             Log out
@@ -44,3 +46,9 @@ export default class Header extends React.Component {
     )
   }
 }
+
+const mapStateToProps = state => ({
+  error: state.errorState.error
+})
+
+export default connect(mapStateToProps)(Header)

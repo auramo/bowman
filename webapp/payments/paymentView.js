@@ -1,7 +1,8 @@
 import React from 'react'
+import axios from 'axios'
 import Header from '../header'
 import { navigateTo } from '../router'
-import axios from 'axios'
+import { handleError } from '../errors/error-dispatch'
 
 const PaymentsTable = ({ payments }) => (
   <table className="table table-striped">
@@ -30,13 +31,13 @@ export default class PaymentView extends React.PureComponent {
     this.state = { payments: [] }
   }
 
-  componentDidCatch(x) {
-    console.log('in catch', x)
-  }
-
   async componentDidMount() {
-    const response = await axios.get('/api/payments')
-    this.setState({ payments: response.data.payments })
+    try {
+      const response = await axios.get('/api/payments')
+      this.setState({ payments: response.data.payments })
+    } catch (error) {
+      handleError(error)
+    }
   }
 
   render() {
