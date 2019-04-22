@@ -2,8 +2,6 @@ const camelize = require('camelize')
 const db = require('../db/db')
 
 const getPayments = async userId => {
-  console.log('GET PAYMENTS DB', db)
-
   const rawPayments = await db.query(
     `SELECT * FROM payment p
      JOIN payment_group pg ON p.payment_group_id = pg.id
