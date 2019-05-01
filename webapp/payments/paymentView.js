@@ -1,3 +1,4 @@
+import './paymentView.less'
 import React from 'react'
 import axios from 'axios'
 import Header from '../header'
@@ -5,24 +6,26 @@ import { navigateTo } from '../router'
 import { handleError } from '../errors/error-dispatch'
 
 const PaymentsTable = ({ payments }) => (
-  <table className="table table-striped">
-    <thead>
-      <tr>
-        <th>Maksaja</th>
-        <th>Tyyppi</th>
-        <th>Hinta</th>
-      </tr>
-    </thead>
-    <tbody>
-      {payments.map((payment, index) => (
-        <tr key={index}>
-          <td>{payment.name}</td>
-          <td>{payment.description}</td>
-          <td>{payment.amountCents}</td>
+  <div className="b__payment-list">
+    <table className="table table-striped b__payment-table">
+      <thead>
+        <tr>
+          <th>Maksaja</th>
+          <th>Tyyppi</th>
+          <th>Hinta</th>
         </tr>
-      ))}
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        {payments.map((payment, index) => (
+          <tr key={index}>
+            <td>{payment.name}</td>
+            <td>{payment.description}</td>
+            <td>{payment.amountCents}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
 )
 
 export default class PaymentView extends React.PureComponent {
@@ -44,12 +47,16 @@ export default class PaymentView extends React.PureComponent {
     return (
       <div>
         <Header selectedTab="payments" />
-        <div className="view-content">
-          <h1>Maksut</h1>
-          <button className="btn btn-primary" onClick={evt => navigateTo('/newPayment')}>
-            Uusi maksu
-          </button>
-          <PaymentsTable payments={this.state.payments} />
+        <div className="b__view-content b__payments-container">
+          <div className="b__payments-controls">
+            <button className="btn btn-primary" onClick={evt => navigateTo('/newPayment')}>
+              <i class="icon icon-plus" />
+            </button>
+          </div>
+          <div className="b__payments-content">
+            <PaymentsTable payments={this.state.payments} />
+          </div>
+          <div className="b__payments-footer">{this.state.payments ? this.state.payments.length + ' kpl' : ''}</div>
         </div>
       </div>
     )
