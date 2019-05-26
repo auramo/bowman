@@ -4,23 +4,29 @@ import axios from 'axios'
 import Header from '../header'
 import { navigateTo } from '../router'
 import { handleError } from '../errors/error-dispatch'
+import { format } from 'date-fns'
 
 const PaymentsTable = ({ payments }) => (
   <div className="b__payment-list">
     <table className="table table-striped b__payment-table">
       <thead>
         <tr>
-          <th>Maksaja</th>
           <th>Tyyppi</th>
+          <th>Päivä</th>
           <th>Hinta</th>
+          <th>Maksaja</th>
         </tr>
       </thead>
       <tbody>
         {payments.map((payment, index) => (
-          <tr key={index}>
-            <td>{payment.name}</td>
-            <td>{payment.description}</td>
-            <td>{payment.amountCents}</td>
+          <tr key={index} title={payment.description}>
+            <td>{payment.paymentType}</td>
+            <td>{format(payment.paymentDate, 'DD.MM.YYYY')}</td>
+            <td>
+              {Math.floor(payment.amountCents / 100)}
+              {payment.amountCents % 100 ? `,${payment.amountCents % 100}` : ''}
+            </td>
+            <td>{payment.payerName}</td>
           </tr>
         ))}
       </tbody>
