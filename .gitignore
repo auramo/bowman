@@ -7,3 +7,4 @@ dist
 .env
 data-to-import
 
+yarn-error.log
