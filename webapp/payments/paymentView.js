@@ -20,7 +20,9 @@ const PaymentsTable = ({ payments }) => (
       <tbody>
         {payments.map((payment, index) => (
           <tr key={index} title={payment.description}>
-            <td>{payment.paymentType}</td>
+            <td className={payment.description ? 'tooltip tooltip-right' : ''} data-tooltip={payment.description}>
+              {payment.paymentType}
+            </td>
             <td>{format(payment.paymentDate, 'DD.MM.YYYY')}</td>
             <td>
               {Math.floor(payment.amountCents / 100)}
