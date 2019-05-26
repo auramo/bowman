@@ -57,11 +57,15 @@ export default class PaymentView extends React.PureComponent {
     return (
       <div>
         <Header selectedTab="payments" />
+        <div className="b__payments-logo">
+          <img src="img/euro-svgrepo-com.svg" />
+        </div>
         <div className="b__view-content b__payments-container">
           <div className="b__payments-controls">
-            <button className="btn btn-primary" onClick={evt => navigateTo('/newPayment')}>
+            <button className="btn btn-primary b__add-payment-button" onClick={evt => navigateTo('/newPayment')}>
               <i class="icon icon-plus" />
             </button>
+            <input class="form-input b__search-payments" type="text" placeholder="Hae" />
           </div>
           <div className="b__payments-content">
             <PaymentsTable payments={this.state.payments} />
