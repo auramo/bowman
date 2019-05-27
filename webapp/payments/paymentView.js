@@ -1,10 +1,12 @@
-import './paymentView.less'
-import React from 'react'
 import axios from 'axios'
+import { format } from 'date-fns'
+import * as _ from 'lodash'
+import * as R from 'ramda'
+import React from 'react'
+import { handleError } from '../errors/error-dispatch'
 import Header from '../header'
 import { navigateTo } from '../router'
-import { handleError } from '../errors/error-dispatch'
-import { format } from 'date-fns'
+import './paymentView.less'
 
 const PaymentsTable = ({ payments }) => (
   <div className="b__payment-list">
@@ -38,10 +40,54 @@ const PaymentsTable = ({ payments }) => (
   </div>
 )
 
+const filterPayments = (filterString, payments) => {
+  if (!filterString) return payments
+  const matchesSubString = fieldValue => {
+    if (fieldValue) {
+      return fieldValue
+        .toString()
+        .toLowerCase()
+        .includes(filterString.toLowerCase())
+    } else {
+      return false
+    }
+  }
+  return payments.filter(payment => {
+    const fieldValues = R.values(R.pick(['paymentType', 'description', 'amountCents', 'payerName'], payment))
+    return fieldValues.some(matchesSubString)
+  })
+}
+
+class SearchField extends React.PureComponent {
+  constructor(props) {
+    super(props)
+    this.state = { fieldValue: null }
+    this.debouncedFilterValue = _.debounce(this.callFilterValue.bind(this), 500, { trailing: true })
+  }
+
+  callFilterValue(value) {
+    this.props.filterValue(value)
+  }
+
+  render() {
+    return (
+      <input
+        className="form-input b__search-payments"
+        type="text"
+        placeholder="Hae"
+        onChange={evt => {
+          this.debouncedFilterValue(evt.target.value)
+          this.setState({ fieldValue: evt.target.value })
+        }}
+      />
+    )
+  }
+}
+
 export default class PaymentView extends React.PureComponent {
   constructor(props) {
     super(props)
-    this.state = { payments: [] }
+    this.state = { payments: [], filterString: null }
   }
 
   async componentDidMount() {
@@ -63,12 +109,12 @@ export default class PaymentView extends React.PureComponent {
         <div className="b__view-content b__payments-container">
           <div className="b__payments-controls">
             <button className="btn btn-primary b__add-payment-button" onClick={evt => navigateTo('/newPayment')}>
-              <i class="icon icon-plus" />
+              <i className="icon icon-plus" />
             </button>
-            <input class="form-input b__search-payments" type="text" placeholder="Hae" />
+            <SearchField filterValue={value => this.setState({ filterString: value })} />
           </div>
           <div className="b__payments-content">
-            <PaymentsTable payments={this.state.payments} />
+            <PaymentsTable payments={filterPayments(this.state.filterString, this.state.payments)} />
           </div>
           <div className="b__payments-footer">{this.state.payments ? this.state.payments.length + ' kpl' : ''}</div>
         </div>
