@@ -55,11 +55,15 @@ class PaymentsTable extends React.PureComponent {
                     <span className={payment.description ? 'popover popover-right' : ''}>
                       {payment.paymentType}
                       {payment.description ? (
-                        <div className="popover-container">
-                          <div className="card">
-                            <div className="card-body">{payment.description}</div>
+                        <React.Fragment>
+                          {'  '}
+                          <i className="icon icon-message" style={{ color: '#5755d9' }} />
+                          <div className="popover-container">
+                            <div className="card">
+                              <div className="card-body">{payment.description}</div>
+                            </div>
                           </div>
-                        </div>
+                        </React.Fragment>
                       ) : null}
                     </span>
                   </td>
