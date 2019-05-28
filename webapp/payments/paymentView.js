@@ -8,44 +8,76 @@ import Header from '../header'
 import { navigateTo } from '../router'
 import './paymentView.less'
 
-const PaymentsTable = ({ payments }) => (
-  <div className="b__payment-list">
-    <table className="table table-striped b__payment-table">
-      <thead>
-        <tr>
-          <th>Tyyppi</th>
-          <th>Päivä</th>
-          <th>Hinta</th>
-          <th>Maksaja</th>
-        </tr>
-      </thead>
-      <tbody>
-        {payments.map((payment, index) => (
-          <tr key={index} title={payment.description}>
-            <td>
-              <span className={payment.description ? 'popover popover-right' : ''}>
-                {payment.paymentType}
-                {payment.description ? (
-                  <div class="popover-container">
-                    <div class="card">
-                      <div class="card-body">{payment.description}</div>
-                    </div>
-                  </div>
-                ) : null}
-              </span>
-            </td>
-            <td>{format(payment.paymentDate, 'DD.MM.YYYY')}</td>
-            <td>
-              {Math.floor(payment.amountCents / 100)}
-              {payment.amountCents % 100 ? `,${payment.amountCents % 100}` : ''}
-            </td>
-            <td>{payment.payerName}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-)
+class PaymentsTable extends React.PureComponent {
+  constructor(props) {
+    super(props)
+    this.state = { editing: false, paymentId: null }
+  }
+  closeEditing() {
+    this.setState({ editing: false, paymentId: null })
+  }
+  render() {
+    const { payments } = this.props
+    return (
+      <React.Fragment>
+        <div className={`modal ${this.state.editing ? 'active' : ''}`}>
+          <a href="#close" className="modal-overlay" onClick={this.closeEditing.bind(this)} />
+          <div className="modal-container">
+            <div className="modal-header">
+              <a href="#close" className="btn btn-clear float-right" onClick={this.closeEditing.bind(this)} />
+              <div className="modal-title h5">Modal title</div>
+            </div>
+            <div className="modal-body">
+              <div className="content">content stuff</div>
+            </div>
+            <div className="modal-footer">footer stuff</div>
+          </div>
+        </div>
+        <div className="b__payment-list">
+          <table className="table table-striped b__payment-table">
+            <thead>
+              <tr>
+                <th>Tyyppi</th>
+                <th>Päivä</th>
+                <th>Hinta</th>
+                <th>Maksaja</th>
+              </tr>
+            </thead>
+            <tbody>
+              {payments.map((payment, index) => (
+                <tr
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => this.setState({ editing: true, paymentId: payment.paymentId })}
+                  key={index}
+                  title={payment.description}
+                >
+                  <td>
+                    <span className={payment.description ? 'popover popover-right' : ''}>
+                      {payment.paymentType}
+                      {payment.description ? (
+                        <div className="popover-container">
+                          <div className="card">
+                            <div className="card-body">{payment.description}</div>
+                          </div>
+                        </div>
+                      ) : null}
+                    </span>
+                  </td>
+                  <td>{format(payment.paymentDate, 'DD.MM.YYYY')}</td>
+                  <td>
+                    {Math.floor(payment.amountCents / 100)}
+                    {payment.amountCents % 100 ? `,${payment.amountCents % 100}` : ''}
+                  </td>
+                  <td>{payment.payerName}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </React.Fragment>
+    )
+  }
+}
 
 const filterPayments = (filterString, payments) => {
   if (!filterString) return payments
