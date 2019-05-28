@@ -23,8 +23,15 @@ const PaymentsTable = ({ payments }) => (
         {payments.map((payment, index) => (
           <tr key={index} title={payment.description}>
             <td>
-              <span className={payment.description ? 'tooltip tooltip-right' : ''} data-tooltip={payment.description}>
+              <span className={payment.description ? 'popover popover-right' : ''}>
                 {payment.paymentType}
+                {payment.description ? (
+                  <div class="popover-container">
+                    <div class="card">
+                      <div class="card-body">{payment.description}</div>
+                    </div>
+                  </div>
+                ) : null}
               </span>
             </td>
             <td>{format(payment.paymentDate, 'DD.MM.YYYY')}</td>
