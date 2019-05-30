@@ -6,6 +6,7 @@ import React from 'react'
 import { handleError } from '../errors/error-dispatch'
 import Header from '../header'
 import { navigateTo } from '../router'
+import PaymentDetailView from './paymentDetailView'
 import './paymentView.less'
 
 class PaymentsTable extends React.PureComponent {
@@ -20,19 +21,7 @@ class PaymentsTable extends React.PureComponent {
     const { payments } = this.props
     return (
       <React.Fragment>
-        <div className={`modal ${this.state.editing ? 'active' : ''}`}>
-          <a href="#close" className="modal-overlay" onClick={this.closeEditing.bind(this)} />
-          <div className="modal-container">
-            <div className="modal-header">
-              <a href="#close" className="btn btn-clear float-right" onClick={this.closeEditing.bind(this)} />
-              <div className="modal-title h5">Modal title</div>
-            </div>
-            <div className="modal-body">
-              <div className="content">content stuff</div>
-            </div>
-            <div className="modal-footer">footer stuff</div>
-          </div>
-        </div>
+        {this.state.editing ? <PaymentDetailView closeDetailView={this.closeEditing.bind(this)} /> : null}
         <div className="b__payment-list">
           <table className="table table-striped b__payment-table">
             <thead>
@@ -156,6 +145,7 @@ export default class PaymentView extends React.PureComponent {
             </button>
             <SearchField filterValue={value => this.setState({ filterString: value })} />
           </div>
+          <div class="divider" />
           <div className="b__payments-content">
             <PaymentsTable payments={filterPayments(this.state.filterString, this.state.payments)} />
           </div>

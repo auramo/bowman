@@ -173,3 +173,7 @@ any way, you can just throw them away and define your own.
 Euro SVG Vector image (euro-svgrepo-com.svg) is from:
 https://www.svgrepo.com/svg/4828/euro
 It is licensed under Creative Commons license.
+
+Euro coin with hand image is from:
+https://www.svgrepo.com/svg/17829/big-euro-coin-on-hand
+It is licensed under Creative Commons license.
