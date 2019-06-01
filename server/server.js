@@ -1,4 +1,5 @@
 require('dotenv').config()
+const promiseRouter = require('express-promise-router')
 const path = require('path')
 const sessionInitializer = require('./sessionInitializer')
 const loginHandler = require('./auth/loginHandler')
@@ -20,10 +21,20 @@ headerMiddleware.init(app)
 sessionInitializer.init(app)
 authenticator.init(app)
 loginHandler.init(app)
-userApi.init(app)
-paymentApi.init(app)
 
 app.use(compression({ threshold: 512 }))
+
+const apiRouter = promiseRouter()
+userApi.init(apiRouter)
+paymentApi.init(apiRouter)
+apiRouter.use((err, req, res, next) => {
+  if (res.headersSent) {
+    return next(err)
+  }
+  console.error(err.stack)
+  res.status(500).send({ error: err.message })
+})
+app.use(apiRouter)
 
 const clientAppHtml = (req, res) => res.sendFile(path.resolve(`${__dirname}/../dist/index.html`))
 app.use('/payments*', clientAppHtml)
