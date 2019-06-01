@@ -46,7 +46,7 @@ class PaymentsTable extends React.PureComponent {
                       {payment.description ? (
                         <React.Fragment>
                           {'  '}
-                          <i className="icon icon-message" style={{ color: '#5755d9' }} />
+                          <img className="b__info-icon" src="img/Information_icon.svg" width="20" height="20" />
                           <div className="popover-container">
                             <div className="card">
                               <div className="card-body">{payment.description}</div>
