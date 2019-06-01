@@ -1,11 +1,28 @@
 import React from 'react'
+import axios from 'axios'
 import './paymentDetailView.less'
+
+const fetchChoiceData = async () => {
+  const {
+    data: { paymentTypes }
+  } = await axios.get('/api/paymentTypes')
+  return { paymentTypes }
+}
 
 export default class PaymentDetailView extends React.PureComponent {
   constructor(props) {
     super(props)
     this.state = {}
   }
+
+  async componentDidMount() {
+    const { paymentTypes } = await fetchChoiceData()
+    console.log({ paymentTypes })
+    if (!this.props.paymentId) {
+      //this.state.payment = createNewPayment()
+    }
+  }
+
   render() {
     return (
       <div className={'modal active'}>
@@ -21,28 +38,28 @@ export default class PaymentDetailView extends React.PureComponent {
             </div>
           </div>
           <div className="modal-body b__payment-detail-content">
-            <div class="form-group">
-              <label class="form-label">Tyyppi</label>
-              <select class="form-select">
+            <div className="form-group">
+              <label className="form-label">Tyyppi</label>
+              <select className="form-select">
                 <option>Sähkö</option>
                 <option>Lemmikit</option>
               </select>
-              <label class="form-label">Maksaja</label>
-              <select class="form-select">
+              <label className="form-label">Maksaja</label>
+              <select className="form-select">
                 <option>Johanna Nummila</option>
                 <option>Perttu Auramo</option>
               </select>
-              <label class="form-label">Hinta</label>
-              <input class="form-input" type="text" placeholder="Hinta euroina" />
-              <label class="form-label">Päivä</label>
-              <input class="form-input" type="text" placeholder="PP.KK.VVVV" />
-              <label class="form-label">Lisätiedot</label>
-              <textarea class="form-input" placeholder="Kuvaus" rows="3" />
+              <label className="form-label">Hinta</label>
+              <input className="form-input" type="text" placeholder="Hinta euroina" />
+              <label className="form-label">Päivä</label>
+              <input className="form-input" type="text" placeholder="PP.KK.VVVV" />
+              <label className="form-label">Lisätiedot</label>
+              <textarea className="form-input" placeholder="Kuvaus" rows="3" />
             </div>
           </div>
           <div className="modal-footer">
-            <button class="btn btn-error b__delete-payment">Poista</button>
-            <button class="btn btn-primary">Tallenna</button>
+            <button className="btn btn-error b__delete-payment">Poista</button>
+            <button className="btn btn-primary">Tallenna</button>
           </div>
         </div>
       </div>

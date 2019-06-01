@@ -145,7 +145,7 @@ export default class PaymentView extends React.PureComponent {
             </button>
             <SearchField filterValue={value => this.setState({ filterString: value })} />
           </div>
-          <div class="divider" />
+          <div className="divider" />
           <div className="b__payments-content">
             <PaymentsTable payments={filterPayments(this.state.filterString, this.state.payments)} />
           </div>
