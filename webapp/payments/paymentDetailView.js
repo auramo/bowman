@@ -12,7 +12,22 @@ const fetchChoiceData = async () => {
 export default class PaymentDetailView extends React.PureComponent {
   constructor(props) {
     super(props)
-    this.state = { paymentTypes: null }
+    this.state = { paymentTypes: null, selectedPaymentType: null }
+  }
+
+  renderPaymentTypes() {
+    return (
+      <select
+        className="form-select"
+        value={this.state.selectedPaymentType}
+        onChange={evt => this.setState({ selectedPaymentType: evt.target.value })}
+      >
+        <option value={null}>Valitse</option>
+        {this.state.paymentTypes.map(paymentType => (
+          <option value={paymentType.id}>{paymentType.description}</option>
+        ))}
+      </select>
+    )
   }
 
   async componentDidMount() {
@@ -38,14 +53,12 @@ export default class PaymentDetailView extends React.PureComponent {
               <div className="modal-title h5 b__payment-detail-heading">Maksun tiedot</div>
             </div>
           </div>
-          {this.state.paymentTypes ? (
+
+          {this.state.paymentTypes /* TODO check for all necessary state here (extract) */ ? (
             <div className="modal-body b__payment-detail-content">
               <div className="form-group">
                 <label className="form-label">Tyyppi</label>
-                <select className="form-select">
-                  <option>Sähkö</option>
-                  <option>Lemmikit</option>
-                </select>
+                {this.renderPaymentTypes()}
                 <label className="form-label">Maksaja</label>
                 <select className="form-select">
                   <option>Johanna Nummila</option>
