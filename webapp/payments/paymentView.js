@@ -38,7 +38,6 @@ class PaymentsTable extends React.PureComponent {
                   style={{ cursor: 'pointer' }}
                   onClick={() => this.setState({ editing: true, paymentId: payment.paymentId })}
                   key={index}
-                  title={payment.description}
                 >
                   <td>
                     <span className={payment.description ? 'popover popover-right' : ''}>
