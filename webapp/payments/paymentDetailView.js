@@ -12,12 +12,13 @@ const fetchChoiceData = async () => {
 export default class PaymentDetailView extends React.PureComponent {
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = { paymentTypes: null }
   }
 
   async componentDidMount() {
     const { paymentTypes } = await fetchChoiceData()
     console.log({ paymentTypes })
+    this.setState({ paymentTypes })
     if (!this.props.paymentId) {
       //this.state.payment = createNewPayment()
     }
@@ -37,26 +38,31 @@ export default class PaymentDetailView extends React.PureComponent {
               <div className="modal-title h5 b__payment-detail-heading">Maksun tiedot</div>
             </div>
           </div>
-          <div className="modal-body b__payment-detail-content">
-            <div className="form-group">
-              <label className="form-label">Tyyppi</label>
-              <select className="form-select">
-                <option>Sähkö</option>
-                <option>Lemmikit</option>
-              </select>
-              <label className="form-label">Maksaja</label>
-              <select className="form-select">
-                <option>Johanna Nummila</option>
-                <option>Perttu Auramo</option>
-              </select>
-              <label className="form-label">Hinta</label>
-              <input className="form-input" type="text" placeholder="Hinta euroina" />
-              <label className="form-label">Päivä</label>
-              <input className="form-input" type="text" placeholder="PP.KK.VVVV" />
-              <label className="form-label">Lisätiedot</label>
-              <textarea className="form-input" placeholder="Kuvaus" rows="3" />
+          {this.state.paymentTypes ? (
+            <div className="modal-body b__payment-detail-content">
+              <div className="form-group">
+                <label className="form-label">Tyyppi</label>
+                <select className="form-select">
+                  <option>Sähkö</option>
+                  <option>Lemmikit</option>
+                </select>
+                <label className="form-label">Maksaja</label>
+                <select className="form-select">
+                  <option>Johanna Nummila</option>
+                  <option>Perttu Auramo</option>
+                </select>
+                <label className="form-label">Hinta</label>
+                <input className="form-input" type="text" placeholder="Hinta euroina" />
+                <label className="form-label">Päivä</label>
+                <input className="form-input" type="text" placeholder="PP.KK.VVVV" />
+                <label className="form-label">Lisätiedot</label>
+                <textarea className="form-input" placeholder="Kuvaus" rows="3" />
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="loading loading-lg" />
+          )}
+
           <div className="modal-footer">
             <button className="btn btn-error b__delete-payment">Poista</button>
             <button className="btn btn-primary">Tallenna</button>

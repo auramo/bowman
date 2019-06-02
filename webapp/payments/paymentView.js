@@ -119,7 +119,7 @@ class SearchField extends React.PureComponent {
 export default class PaymentView extends React.PureComponent {
   constructor(props) {
     super(props)
-    this.state = { payments: [], filterString: null }
+    this.state = { payments: null, filterString: null }
   }
 
   async componentDidMount() {
@@ -147,7 +147,11 @@ export default class PaymentView extends React.PureComponent {
           </div>
           <div className="divider" />
           <div className="b__payments-content">
-            <PaymentsTable payments={filterPayments(this.state.filterString, this.state.payments)} />
+            {this.state.payments ? (
+              <PaymentsTable payments={filterPayments(this.state.filterString, this.state.payments)} />
+            ) : (
+              <div className="loading loading-lg" />
+            )}
           </div>
           <div className="b__payments-footer">{this.state.payments ? this.state.payments.length + ' kpl' : ''}</div>
         </div>
