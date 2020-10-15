@@ -32,7 +32,7 @@ We use [dotenv](https://github.com/motdotla/dotenv) for configuration, and the a
 creates the DB configuration for us. Now we'll have to fetch and start the PostgreSQL
 Docker image:
 
-`docker run --name bowman -p 5435:5432 -e POSTGRES_DB=bowman -e POSTGRES_USER=bowman -e POSTGRES_PASSWORD=bowman -d postgres:10.2`
+`docker run --name bowman -p 5435:5432 -e POSTGRES_DB=bowman -e POSTGRES_USER=bowman -e POSTGRES_PASSWORD=bowman -d postgres:13`
 
 (on Linux you have to prefix the command with sudo)
 
