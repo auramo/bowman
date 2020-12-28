@@ -11,3 +11,4 @@ yarn-error.log
 legacy-data-migration/work/expenses.json
 legacy-data-migration/work/payers.json
 legacy-data-migration/work/payment-types.json
+legacy-data-migration/import_vars.sh
