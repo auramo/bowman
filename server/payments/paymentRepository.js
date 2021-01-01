@@ -3,7 +3,7 @@ const db = require('../db/db')
 
 const getPayments = async userId => {
   const rawPayments = await db.query(
-    `SELECT p.amount_cents, p.payment_date, pua.name as payer_name, 
+    `SELECT p.id, p.amount_cents, p.payment_date, pua.name as payer_name, 
       pt.description as payment_type, p.description 
      FROM payment p
      JOIN payment_group pg ON p.payment_group_id = pg.id
@@ -18,4 +18,17 @@ const getPayments = async userId => {
   return camelize(rawPayments)
 }
 
-module.exports = { getPayments }
+const getPayment = async paymentId => {
+  console.log('getPayment', paymentId)
+  const rawPayments = await db.query(
+    `SELECT p.amount_cents, p.payment_date, p.user_account_id as payer_id, 
+     p.payment_type_id, p.description 
+     FROM payment p
+     WHERE p.id = $1`,
+    [paymentId]
+  )
+  if (rawPayments.length === 0) return null
+  return camelize(rawPayments[0])
+}
+
+module.exports = { getPayments, getPayment }

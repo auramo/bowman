@@ -9,10 +9,31 @@ const fetchChoiceData = async () => {
   return { paymentTypes }
 }
 
+const fetchPayment = async (paymentId) => {
+  const {
+    data: { payment }
+  } = await axios.get(`/api/payment?paymentId=${paymentId}`)
+  console.log(payment)
+  return { payment }
+}
+
+const createNewPayment = () => ({
+  description: '',
+  amountCents: null,
+  paymentTypeId: null,
+  payerId: null,
+  paymentDate: null
+})
+
+
 export default class PaymentDetailView extends React.PureComponent {
   constructor(props) {
     super(props)
-    this.state = { paymentTypes: null, selectedPaymentType: null }
+    this.state = { 
+      paymentTypes: null, 
+      selectedPaymentType: null,
+      payment: createNewPayment()
+    }
   }
 
   renderPaymentTypes() {
@@ -34,8 +55,9 @@ export default class PaymentDetailView extends React.PureComponent {
     const { paymentTypes } = await fetchChoiceData()
     console.log({ paymentTypes })
     this.setState({ paymentTypes })
-    if (!this.props.paymentId) {
-      //this.state.payment = createNewPayment()
+    if (this.props.paymentId) {
+      const { payment } = await fetchPayment(this.props.paymentId)
+      this.setState({payment})
     }
   }
 
@@ -69,7 +91,11 @@ export default class PaymentDetailView extends React.PureComponent {
                 <label className="form-label">Päivä</label>
                 <input className="form-input" type="text" placeholder="PP.KK.VVVV" />
                 <label className="form-label">Lisätiedot</label>
-                <textarea className="form-input" placeholder="Kuvaus" rows="3" />
+                <textarea className="form-input" 
+                  placeholder="Kuvaus" 
+                  rows="3" 
+                  value={this.state.payment.description}
+                  onChange={newVal => this.state.payment.description = newVal} />
               </div>
             </div>
           ) : (

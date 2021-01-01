@@ -21,7 +21,7 @@ class PaymentsTable extends React.PureComponent {
     const { payments } = this.props
     return (
       <React.Fragment>
-        {this.state.editing ? <PaymentDetailView closeDetailView={this.closeEditing.bind(this)} /> : null}
+        {this.state.editing ? <PaymentDetailView paymentId={this.state.paymentId} closeDetailView={this.closeEditing.bind(this)} /> : null}
         <div className="b__payment-list">
           <table className="table table-striped b__payment-table">
             <thead>
@@ -36,7 +36,7 @@ class PaymentsTable extends React.PureComponent {
               {payments.map((payment, index) => (
                 <tr
                   style={{ cursor: 'pointer' }}
-                  onClick={() => this.setState({ editing: true, paymentId: payment.paymentId })}
+                  onClick={() => this.setState({ editing: true, paymentId: payment.id })}
                   key={index}
                 >
                   <td>

@@ -7,6 +7,11 @@ module.exports.init = app => {
     res.json({ payments })
   })
 
+  app.get('/api/payment', async (req, res) => {
+    const payment = await paymentRepository.getPayment(req.query.paymentId)
+    res.json({ payment })
+  })
+
   app.get('/api/paymentTypes', async (req, res) => {
     const paymentTypes = await paymentTypeRepository.getPaymentTypes()
     res.json({ paymentTypes })
