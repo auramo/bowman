@@ -1,5 +1,7 @@
 const camelize = require('camelize')
 const db = require('../db/db')
+const money = require('../../common/money')
+const R = require('ramda')
 
 const getPayments = async userId => {
   const rawPayments = await db.query(
@@ -28,7 +30,9 @@ const getPayment = async paymentId => {
     [paymentId]
   )
   if (rawPayments.length === 0) return null
-  return camelize(rawPayments[0])
+  const dbPayment = camelize(rawPayments[0])
+  const payment = R.dissoc('amountCents', { ...dbPayment, amount: money.centsToString(dbPayment.amountCents) })
+  return payment
 }
 
 module.exports = { getPayments, getPayment }
