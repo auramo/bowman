@@ -7,7 +7,7 @@ import { handleError } from '../errors/error-dispatch'
 import Header from '../header'
 import { navigateTo } from '../router'
 import PaymentDetailView from './paymentDetailView'
-import {centsToString} from './payment'
+import { centsToString } from './payment'
 import './paymentView.less'
 
 class PaymentsTable extends React.PureComponent {
@@ -22,13 +22,13 @@ class PaymentsTable extends React.PureComponent {
     const { payments } = this.props
     return (
       <React.Fragment>
-        {this.state.editing 
-          ? <PaymentDetailView 
-              paymentId={this.state.paymentId} 
-              closeDetailView={this.closeEditing.bind(this)}
-              onSave={this.props.onSave} /> 
-          : null
-         }
+        {this.state.editing ? (
+          <PaymentDetailView
+            paymentId={this.state.paymentId}
+            closeDetailView={this.closeEditing.bind(this)}
+            onSave={this.props.onSave}
+          />
+        ) : null}
         <div className="b__payment-list">
           <table className="table table-striped b__payment-table">
             <thead>
@@ -63,9 +63,7 @@ class PaymentsTable extends React.PureComponent {
                     </span>
                   </td>
                   <td>{format(payment.paymentDate, 'DD.MM.YYYY')}</td>
-                  <td>
-                    {centsToString(payment.amountCents)}
-                  </td>
+                  <td>{centsToString(payment.amountCents)}</td>
                   <td>{payment.payerName}</td>
                 </tr>
               ))}
@@ -124,29 +122,29 @@ class SearchField extends React.PureComponent {
 export default class PaymentView extends React.PureComponent {
   constructor(props) {
     super(props)
-    this.state = { 
-      payments: null, 
+    this.state = {
+      payments: null,
       filterString: null,
-      savedIndicatorClass: "b__saved-indicator--hidden"
+      savedIndicatorClass: 'b__saved-indicator--hidden'
     }
   }
 
   notifySaved() {
-    this.setState({savedIndicatorClass: 'animate__backInDown'})
-    setTimeout(() => this.setState({savedIndicatorClass: 'animate__backOutDown'}) ,4000)
+    this.setState({ savedIndicatorClass: 'animate__backInDown' })
+    setTimeout(() => this.setState({ savedIndicatorClass: 'animate__backOutDown' }), 4000)
   }
 
   async componentDidMount() {
     try {
       const response = await axios.get('/api/payments')
-      this.setState({ 
+      this.setState({
         payments: response.data.payments
-       })
+      })
     } catch (error) {
       handleError(error)
     }
   }
-  
+
   render() {
     return (
       <div>
@@ -160,17 +158,20 @@ export default class PaymentView extends React.PureComponent {
               <i className="icon icon-plus" />
             </button>
             <SearchField filterValue={value => this.setState({ filterString: value })} />
-            <div className="b__grow_filler"/>
-            <div className={`b__saved-indicator label label-success animate__animated ${this.state.savedIndicatorClass}`}>
+            <div className="b__grow_filler" />
+            <div
+              className={`b__saved-indicator label label-success animate__animated ${this.state.savedIndicatorClass}`}
+            >
               Tallennettu
             </div>
           </div>
           <div className="divider" />
           <div className="b__payments-content">
             {this.state.payments ? (
-              <PaymentsTable 
+              <PaymentsTable
                 payments={filterPayments(this.state.filterString, this.state.payments)}
-                onSave={this.notifySaved.bind(this)} />
+                onSave={this.notifySaved.bind(this)}
+              />
             ) : (
               <div className="loading loading-lg" />
             )}

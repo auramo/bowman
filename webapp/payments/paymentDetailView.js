@@ -1,7 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import './paymentDetailView.less'
-import {centsToString} from './payment'
+import { centsToString } from './payment'
 
 const fetchChoiceData = async () => {
   const {
@@ -10,7 +10,7 @@ const fetchChoiceData = async () => {
   return { paymentTypes }
 }
 
-const fetchPayment = async (paymentId) => {
+const fetchPayment = async paymentId => {
   const {
     data: { payment }
   } = await axios.get(`/api/payment?paymentId=${paymentId}`)
@@ -26,12 +26,11 @@ const createNewPayment = () => ({
   paymentDate: null
 })
 
-
 export default class PaymentDetailView extends React.PureComponent {
   constructor(props) {
     super(props)
-    this.state = { 
-      paymentTypes: null, 
+    this.state = {
+      paymentTypes: null,
       selectedPaymentType: null,
       payment: createNewPayment()
     }
@@ -58,7 +57,7 @@ export default class PaymentDetailView extends React.PureComponent {
     this.setState({ paymentTypes })
     if (this.props.paymentId) {
       const { payment } = await fetchPayment(this.props.paymentId)
-      this.setState({payment})
+      this.setState({ payment })
     }
   }
 
@@ -88,19 +87,23 @@ export default class PaymentDetailView extends React.PureComponent {
                   <option>Perttu Auramo</option>
                 </select>
                 <label className="form-label">Hinta</label>
-                <input className="form-input" 
-                  type="text" 
+                <input
+                  className="form-input"
+                  type="text"
                   placeholder="Hinta euroina"
                   value={centsToString(this.state.payment.amountCents)}
-                  onChange={(newVal => null)} />
+                  onChange={newVal => null}
+                />
                 <label className="form-label">Päivä</label>
                 <input className="form-input" type="text" placeholder="PP.KK.VVVV" />
                 <label className="form-label">Lisätiedot</label>
-                <textarea className="form-input" 
-                  placeholder="Kuvaus" 
-                  rows="3" 
+                <textarea
+                  className="form-input"
+                  placeholder="Kuvaus"
+                  rows="3"
                   value={this.state.payment.description}
-                  onChange={newVal => this.state.payment.description = newVal} />
+                  onChange={newVal => (this.state.payment.description = newVal)}
+                />
               </div>
             </div>
           ) : (
@@ -109,10 +112,13 @@ export default class PaymentDetailView extends React.PureComponent {
 
           <div className="modal-footer">
             <button className="btn btn-error b__delete-payment">Poista</button>
-            <button className="btn btn-primary" onClick={() => {
+            <button
+              className="btn btn-primary"
+              onClick={() => {
                 this.props.onSave()
                 this.props.closeDetailView()
-              }}>
+              }}
+            >
               Tallenna
             </button>
           </div>
