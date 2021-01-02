@@ -109,7 +109,12 @@ export default class PaymentDetailView extends React.PureComponent {
 
           <div className="modal-footer">
             <button className="btn btn-error b__delete-payment">Poista</button>
-            <button className="btn btn-primary">Tallenna</button>
+            <button className="btn btn-primary" onClick={() => {
+                this.props.onSave()
+                this.props.closeDetailView()
+              }}>
+              Tallenna
+            </button>
           </div>
         </div>
       </div>

@@ -22,7 +22,13 @@ class PaymentsTable extends React.PureComponent {
     const { payments } = this.props
     return (
       <React.Fragment>
-        {this.state.editing ? <PaymentDetailView paymentId={this.state.paymentId} closeDetailView={this.closeEditing.bind(this)} /> : null}
+        {this.state.editing 
+          ? <PaymentDetailView 
+              paymentId={this.state.paymentId} 
+              closeDetailView={this.closeEditing.bind(this)}
+              onSave={this.props.onSave} /> 
+          : null
+         }
         <div className="b__payment-list">
           <table className="table table-striped b__payment-table">
             <thead>
@@ -118,18 +124,29 @@ class SearchField extends React.PureComponent {
 export default class PaymentView extends React.PureComponent {
   constructor(props) {
     super(props)
-    this.state = { payments: null, filterString: null }
+    this.state = { 
+      payments: null, 
+      filterString: null,
+      savedIndicatorClass: "b__saved-indicator--hidden"
+    }
+  }
+
+  notifySaved() {
+    this.setState({savedIndicatorClass: 'animate__backInDown'})
+    setTimeout(() => this.setState({savedIndicatorClass: 'animate__backOutDown'}) ,4000)
   }
 
   async componentDidMount() {
     try {
       const response = await axios.get('/api/payments')
-      this.setState({ payments: response.data.payments })
+      this.setState({ 
+        payments: response.data.payments
+       })
     } catch (error) {
       handleError(error)
     }
   }
-
+  
   render() {
     return (
       <div>
@@ -143,11 +160,17 @@ export default class PaymentView extends React.PureComponent {
               <i className="icon icon-plus" />
             </button>
             <SearchField filterValue={value => this.setState({ filterString: value })} />
+            <div className="b__grow_filler"/>
+            <div className={`b__saved-indicator label label-success animate__animated ${this.state.savedIndicatorClass}`}>
+              Tallennettu
+            </div>
           </div>
           <div className="divider" />
           <div className="b__payments-content">
             {this.state.payments ? (
-              <PaymentsTable payments={filterPayments(this.state.filterString, this.state.payments)} />
+              <PaymentsTable 
+                payments={filterPayments(this.state.filterString, this.state.payments)}
+                onSave={this.notifySaved.bind(this)} />
             ) : (
               <div className="loading loading-lg" />
             )}
