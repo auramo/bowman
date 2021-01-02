@@ -1,6 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import './paymentDetailView.less'
+import {centsToString} from './payment'
 
 const fetchChoiceData = async () => {
   const {
@@ -87,7 +88,11 @@ export default class PaymentDetailView extends React.PureComponent {
                   <option>Perttu Auramo</option>
                 </select>
                 <label className="form-label">Hinta</label>
-                <input className="form-input" type="text" placeholder="Hinta euroina" />
+                <input className="form-input" 
+                  type="text" 
+                  placeholder="Hinta euroina"
+                  value={centsToString(this.state.payment.amountCents)}
+                  onChange={(newVal => null)} />
                 <label className="form-label">Päivä</label>
                 <input className="form-input" type="text" placeholder="PP.KK.VVVV" />
                 <label className="form-label">Lisätiedot</label>

@@ -7,6 +7,7 @@ import { handleError } from '../errors/error-dispatch'
 import Header from '../header'
 import { navigateTo } from '../router'
 import PaymentDetailView from './paymentDetailView'
+import {centsToString} from './payment'
 import './paymentView.less'
 
 class PaymentsTable extends React.PureComponent {
@@ -57,8 +58,7 @@ class PaymentsTable extends React.PureComponent {
                   </td>
                   <td>{format(payment.paymentDate, 'DD.MM.YYYY')}</td>
                   <td>
-                    {Math.floor(payment.amountCents / 100)}
-                    {payment.amountCents % 100 ? `,${payment.amountCents % 100}` : ''}
+                    {centsToString(payment.amountCents)}
                   </td>
                   <td>{payment.payerName}</td>
                 </tr>
