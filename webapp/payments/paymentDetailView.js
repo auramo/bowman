@@ -9,6 +9,13 @@ const fetchChoiceData = async () => {
   return { paymentTypes }
 }
 
+const fetchPayers = async () => {
+  const {
+    data: { payers }
+  } = await axios.get('/api/payers')
+  return { payers }
+}
+
 const fetchPayment = async paymentId => {
   const {
     data: { payment }
@@ -39,8 +46,8 @@ export default class PaymentDetailView extends React.PureComponent {
     return (
       <select
         className="form-select"
-        value={this.state.selectedPaymentType}
-        onChange={evt => this.setState({ selectedPaymentType: evt.target.value })}
+        value={this.state.payment.paymentTypeId}
+        onChange={evt => this.setState({ payment: { ...this.state.payment, paymentTypeId: evt.target.value } })}
       >
         <option value={null}>Valitse</option>
         {this.state.paymentTypes.map(paymentType => (
@@ -50,10 +57,26 @@ export default class PaymentDetailView extends React.PureComponent {
     )
   }
 
+  renderPayers() {
+    return (
+      <select
+        className="form-select"
+        value={this.state.payment.payerId}
+        onChange={evt => this.setState({ payment: { ...this.state.payment, payerId: evt.target.value } })}
+      >
+        <option value={null}>Valitse</option>
+        {this.state.payers.map(payer => (
+          <option value={payer.id}>{payer.name}</option>
+        ))}
+      </select>
+    )
+  }
+
   async componentDidMount() {
     const { paymentTypes } = await fetchChoiceData()
-    console.log({ paymentTypes })
-    this.setState({ paymentTypes })
+    const { payers } = await fetchPayers()
+    console.log({ payers })
+    this.setState({ paymentTypes, payers })
     if (this.props.paymentId) {
       const { payment } = await fetchPayment(this.props.paymentId)
       this.setState({ payment })
@@ -75,16 +98,13 @@ export default class PaymentDetailView extends React.PureComponent {
             </div>
           </div>
 
-          {this.state.paymentTypes /* TODO check for all necessary state here (extract) */ ? (
+          {this.state.paymentTypes && this.state.payers /* TODO check for all necessary state here (extract) */ ? (
             <div className="modal-body b__payment-detail-content">
               <div className="form-group">
                 <label className="form-label">Tyyppi</label>
                 {this.renderPaymentTypes()}
                 <label className="form-label">Maksaja</label>
-                <select className="form-select">
-                  <option>Johanna Nummila</option>
-                  <option>Perttu Auramo</option>
-                </select>
+                {this.renderPayers()}
                 <label className="form-label">Hinta</label>
                 <input
                   className="form-input"
@@ -98,7 +118,17 @@ export default class PaymentDetailView extends React.PureComponent {
                   }
                 />
                 <label className="form-label">Päivä</label>
-                <input className="form-input" type="text" placeholder="PP.KK.VVVV" />
+                <input
+                  className="form-input"
+                  type="text"
+                  placeholder="PP.KK.VVVV"
+                  value={this.state.payment.paymentDate}
+                  onChange={newVal =>
+                    this.setState({
+                      payment: { ...this.state.payment, paymentDate: newVal.target.value }
+                    })
+                  }
+                />
                 <label className="form-label">Lisätiedot</label>
                 <textarea
                   className="form-input"

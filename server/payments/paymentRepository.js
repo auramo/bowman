@@ -2,6 +2,7 @@ const camelize = require('camelize')
 const db = require('../db/db')
 const money = require('../../common/money')
 const R = require('ramda')
+const { format } = require('date-fns')
 
 const getPayments = async userId => {
   const rawPayments = await db.query(
@@ -31,7 +32,11 @@ const getPayment = async paymentId => {
   )
   if (rawPayments.length === 0) return null
   const dbPayment = camelize(rawPayments[0])
-  const payment = R.dissoc('amountCents', { ...dbPayment, amount: money.centsToString(dbPayment.amountCents) })
+  const payment = R.dissoc('amountCents', {
+    ...dbPayment,
+    amount: money.centsToString(dbPayment.amountCents),
+    paymentDate: format(dbPayment.paymentDate, 'DD.MM.YYYY')
+  })
   return payment
 }
 
