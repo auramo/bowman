@@ -32,6 +32,14 @@ const createNewPayment = () => ({
   paymentDate: null
 })
 
+const savePayment = async payment => {
+  if (payment.id) {
+    await axios.put('/api/payment/', payment)
+  } else {
+    await axios.post('/api/payment/', payment)
+  }
+}
+
 export default class PaymentDetailView extends React.PureComponent {
   constructor(props) {
     super(props)
@@ -135,7 +143,7 @@ export default class PaymentDetailView extends React.PureComponent {
                   placeholder="Kuvaus"
                   rows="3"
                   value={this.state.payment.description}
-                  onChange={newVal => (this.state.payment.description = newVal)}
+                  onChange={evt => this.setState({ payment: { ...this.state.payment, description: evt.target.value } })}
                 />
               </div>
             </div>
@@ -147,7 +155,8 @@ export default class PaymentDetailView extends React.PureComponent {
             <button className="btn btn-error b__delete-payment">Poista</button>
             <button
               className="btn btn-primary"
-              onClick={() => {
+              onClick={async () => {
+                await savePayment(this.state.payment)
                 this.props.onSave()
                 this.props.closeDetailView()
               }}

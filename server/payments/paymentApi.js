@@ -13,6 +13,20 @@ module.exports.init = app => {
     res.json({ payment })
   })
 
+  app.post('/api/payment', async (req, res) => {
+    console.log('post body')
+    console.log(req.body)
+    const payment = await paymentRepository.addPayment(req.body, req.user.id)
+    res.json({})
+  })
+
+  app.put('/api/payment', async (req, res) => {
+    console.log('put body')
+    console.log(req.body)
+    const payment = await paymentRepository.updatePayment(req.body, req.user.id)
+    res.json({})
+  })
+
   app.get('/api/paymentTypes', async (req, res) => {
     const paymentTypes = await paymentTypeRepository.getPaymentTypes()
     res.json({ paymentTypes })
