@@ -26,7 +26,7 @@ const fetchPayment = async paymentId => {
 
 const createNewPayment = () => ({
   description: '',
-  amountCents: null,
+  amount: null,
   paymentTypeId: null,
   payerId: null,
   paymentDate: null
@@ -94,10 +94,10 @@ export default class PaymentDetailView extends React.PureComponent {
   render() {
     return (
       <div className={'modal active'}>
-        <a href="#close" className="modal-overlay" onClick={this.props.closeDetailView} />
+        <a href="#close" className="modal-overlay" onClick={() => this.props.stopEditing(false)} />
         <div className="modal-container b__payment-detail-container">
           <div className="modal-header">
-            <a href="#close" className="btn btn-clear float-right" onClick={this.props.closeDetailView} />
+            <a href="#close" className="btn btn-clear float-right" onClick={() => this.props.stopEditing(false)} />
             <div className="b__payment-detail-header">
               <div className="b__payment-detail-logo">
                 <img src="img/big-euro-coin-on-hand-svgrepo-com.svg" />
@@ -157,8 +157,7 @@ export default class PaymentDetailView extends React.PureComponent {
               className="btn btn-primary"
               onClick={async () => {
                 await savePayment(this.state.payment)
-                this.props.onSave()
-                this.props.closeDetailView()
+                this.props.stopEditing(true)
               }}
             >
               Tallenna

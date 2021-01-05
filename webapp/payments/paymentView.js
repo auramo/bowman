@@ -13,22 +13,11 @@ import './paymentView.less'
 class PaymentsTable extends React.PureComponent {
   constructor(props) {
     super(props)
-    this.state = { editing: false, paymentId: null }
-  }
-  closeEditing() {
-    this.setState({ editing: false, paymentId: null })
   }
   render() {
     const { payments } = this.props
     return (
       <React.Fragment>
-        {this.state.editing ? (
-          <PaymentDetailView
-            paymentId={this.state.paymentId}
-            closeDetailView={this.closeEditing.bind(this)}
-            onSave={this.props.onSave}
-          />
-        ) : null}
         <div className="b__payment-list">
           <table className="table table-striped b__payment-table">
             <thead>
@@ -41,11 +30,7 @@ class PaymentsTable extends React.PureComponent {
             </thead>
             <tbody>
               {payments.map((payment, index) => (
-                <tr
-                  style={{ cursor: 'pointer' }}
-                  onClick={() => this.setState({ editing: true, paymentId: payment.id })}
-                  key={index}
-                >
+                <tr style={{ cursor: 'pointer' }} onClick={() => this.props.startEditing(payment.id)} key={index}>
                   <td>
                     <span className={payment.description ? 'popover popover-right' : ''}>
                       {payment.paymentType}
@@ -125,13 +110,30 @@ export default class PaymentView extends React.PureComponent {
     this.state = {
       payments: null,
       filterString: null,
-      savedIndicatorClass: 'b__saved-indicator--hidden'
+      savedIndicatorClass: 'b__saved-indicator--hidden',
+      editing: false,
+      paymentId: null
     }
   }
 
   notifySaved() {
     this.setState({ savedIndicatorClass: 'animate__backInDown' })
     setTimeout(() => this.setState({ savedIndicatorClass: 'animate__backOutDown' }), 4000)
+  }
+
+  startEditing(paymentId) {
+    this.setState({ editing: true, paymentId })
+  }
+
+  stopEditing(saved) {
+    this.setState({
+      editing: false,
+      paymentId: null,
+      savedIndicatorClass: saved ? 'animate__backInDown' : 'b__saved-indicator--hidden'
+    })
+    if (saved) {
+      setTimeout(() => this.setState({ savedIndicatorClass: 'animate__backOutDown' }), 4000)
+    }
   }
 
   async componentDidMount() {
@@ -149,12 +151,20 @@ export default class PaymentView extends React.PureComponent {
     return (
       <div>
         <Header selectedTab="payments" />
+        {this.state.editing ? (
+          <PaymentDetailView paymentId={this.state.paymentId} stopEditing={saved => this.stopEditing(saved)} />
+        ) : null}
         <div className="b__payments-logo">
           <img src="img/euro-svgrepo-com.svg" />
         </div>
         <div className="b__view-content b__payments-container">
           <div className="b__payments-controls">
-            <button className="btn btn-primary b__add-payment-button" onClick={evt => navigateTo('/newPayment')}>
+            <button
+              className="btn btn-primary b__add-payment-button"
+              onClick={() => {
+                this.setState({ editing: true, paymentId: null })
+              }}
+            >
               <i className="icon icon-plus" />
             </button>
             <SearchField filterValue={value => this.setState({ filterString: value })} />
@@ -170,7 +180,7 @@ export default class PaymentView extends React.PureComponent {
             {this.state.payments ? (
               <PaymentsTable
                 payments={filterPayments(this.state.filterString, this.state.payments)}
-                onSave={this.notifySaved.bind(this)}
+                startEditing={paymentId => this.startEditing(paymentId)}
               />
             ) : (
               <div className="loading loading-lg" />

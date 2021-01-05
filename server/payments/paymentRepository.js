@@ -52,12 +52,19 @@ const addPayment = async (payment, userId) => {
       payment_date, 
       payment_type_id, 
       description, 
-      user_account_id, 
+      user_account_id,
+      payment_group_id)
+     VALUES
+     ($1, 
+      $2, 
+      $3, 
+      $4, 
+      $5, 
+      $6, 
       (SELECT pg.id FROM payment_group pg
         JOIN payment_group_user pgu ON pg.id = pgu.payment_group_id 
-        WHERE pgu.user_account_id = $7))
-     VALUES
-     ($1, $2, $3, $4, $5, $6, $7)`,
+        WHERE pgu.user_account_id = $7)
+      )`,
     [
       uuidv4(),
       money.stringToCents(payment.amount),
