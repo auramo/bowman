@@ -132,11 +132,12 @@ export default class PaymentView extends React.PureComponent {
       savedIndicatorClass: saved ? 'animate__backInDown' : 'b__saved-indicator--hidden'
     })
     if (saved) {
+      this.fetchPayments()
       setTimeout(() => this.setState({ savedIndicatorClass: 'animate__backOutDown' }), 4000)
     }
   }
 
-  async componentDidMount() {
+  async fetchPayments() {
     try {
       const response = await axios.get('/api/payments')
       this.setState({
@@ -145,6 +146,10 @@ export default class PaymentView extends React.PureComponent {
     } catch (error) {
       handleError(error)
     }
+  }
+
+  async componentDidMount() {
+    await this.fetchPayments()
   }
 
   render() {
