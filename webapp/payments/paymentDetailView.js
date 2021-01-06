@@ -44,15 +44,21 @@ const savePayment = async payment => {
   }
 }
 
+const validPaymentType = candidate => candidate !== notSelectedListValue
+
+const validPayer = candidate => candidate !== notSelectedListValue
+
 const validDate = candidate => !!parseDate(candidate)
 
 const validAmount = candidate => !!stringToCents(candidate)
 
-const validPayment = candidate => validDate(candidate.paymentDate) && validAmount(candidate.amount)
+const validPayment = candidate =>
+  validPayer(candidate.payerId) &&
+  validPaymentType(candidate.paymentTypeId) &&
+  validDate(candidate.paymentDate) &&
+  validAmount(candidate.amount)
 
-const validPaymentType = candidate => candidate !== notSelectedListValue
-
-const validPayer = candidate => candidate !== notSelectedListValue
+const formGroupClassName = (validator, value) => `form-group ${validator(value) ? '' : 'has-error'}`
 
 export default class PaymentDetailView extends React.PureComponent {
   constructor(props) {
@@ -127,14 +133,18 @@ export default class PaymentDetailView extends React.PureComponent {
             </div>
           </div>
 
-          {this.state.paymentTypes && this.state.payers /* TODO check for all necessary state here (extract) */ ? (
+          {this.state.paymentTypes && this.state.payers ? (
             <div className="modal-body b__payment-detail-content">
               <div className="form-group">
-                <label className="form-label">Tyyppi</label>
-                {this.renderPaymentTypes()}
-                <label className="form-label">Maksaja</label>
-                {this.renderPayers()}
-                <div className={`form-group ${validAmount(this.state.payment.amount) ? '' : 'has-error'}`}>
+                <div className={formGroupClassName(validPaymentType, this.state.payment.paymentTypeId)}>
+                  <label className="form-label">Tyyppi</label>
+                  {this.renderPaymentTypes()}
+                </div>
+                <div className={formGroupClassName(validPayer, this.state.payment.payerId)}>
+                  <label className="form-label">Maksaja</label>
+                  {this.renderPayers()}
+                </div>
+                <div className={formGroupClassName(validAmount, this.state.payment.amount)}>
                   <label className="form-label">Hinta</label>
                   <input
                     className="form-input"
@@ -148,7 +158,7 @@ export default class PaymentDetailView extends React.PureComponent {
                     }
                   />
                 </div>
-                <div className={`form-group ${validDate(this.state.payment.paymentDate) ? '' : 'has-error'}`}>
+                <div className={formGroupClassName(validDate, this.state.payment.paymentDate)}>
                   <label className="form-label">Päivä</label>
                   <input
                     className="form-input"
