@@ -47,6 +47,8 @@ const validDate = candidate => !!parseDate(candidate)
 
 const validAmount = candidate => !!stringToCents(candidate)
 
+const validPayment = candidate => validDate(candidate.paymentDate) && validAmount(candidate.amount)
+
 export default class PaymentDetailView extends React.PureComponent {
   constructor(props) {
     super(props)
@@ -163,13 +165,16 @@ export default class PaymentDetailView extends React.PureComponent {
           )}
 
           <div className="modal-footer">
-            <button className="btn btn-error b__delete-payment">Poista</button>
+            <button className="btn btn-error b__delete-payment" disabled={!this.state.payment.id}>
+              Poista
+            </button>
             <button
               className="btn btn-primary"
               onClick={async () => {
                 await savePayment(this.state.payment)
                 this.props.stopEditing(true)
               }}
+              disabled={!validPayment(this.state.payment)}
             >
               Tallenna
             </button>
