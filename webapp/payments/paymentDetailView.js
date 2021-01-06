@@ -105,7 +105,6 @@ export default class PaymentDetailView extends React.PureComponent {
   async componentDidMount() {
     const { paymentTypes } = await fetchChoiceData()
     const { payers } = await fetchPayers()
-    console.log({ payers })
     this.setState({ paymentTypes, payers })
     if (this.props.paymentId) {
       const { payment } = await fetchPayment(this.props.paymentId)
