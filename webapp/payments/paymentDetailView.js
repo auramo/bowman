@@ -71,6 +71,16 @@ export default class PaymentDetailView extends React.PureComponent {
     }
   }
 
+  async save() {
+    try {
+      await savePayment(this.state.payment)
+      this.props.stopEditing(true)
+    } catch (e) {
+      console.log('Got exception while saving', e)
+      this.setState({ error: 'Virhe tallennuksessa' })
+    }
+  }
+
   renderPaymentTypes() {
     return (
       <select
@@ -207,10 +217,7 @@ export default class PaymentDetailView extends React.PureComponent {
               </button>
               <button
                 className="btn btn-primary"
-                onClick={async () => {
-                  await savePayment(this.state.payment)
-                  this.props.stopEditing(true)
-                }}
+                onClick={async () => this.save()}
                 disabled={!validPayment(this.state.payment)}
               >
                 Tallenna
