@@ -2,7 +2,9 @@ const camelize = require('camelize')
 const db = require('../db/db')
 const money = require('../../common/money')
 const R = require('ramda')
-const { format, parse } = require('date-fns')
+const { format } = require('date-fns')
+const { parseDate } = require('../../common/date')
+
 const uuidv4 = require('uuid/v4')
 
 const getPayments = async userId => {
@@ -68,7 +70,7 @@ const addPayment = async (payment, userId) => {
     [
       uuidv4(),
       money.stringToCents(payment.amount),
-      parse(payment.paymentDate, 'DD.MM.YYYY'),
+      parseDate(payment.paymentDate),
       payment.paymentTypeId,
       payment.description,
       payment.payerId,
@@ -92,7 +94,7 @@ const updatePayment = async (payment, userId) => {
     [
       payment.id,
       money.stringToCents(payment.amount),
-      parse(payment.paymentDate, 'DD.MM.YYYY'),
+      parseDate(payment.paymentDate),
       payment.paymentTypeId,
       payment.description,
       payment.payerId,

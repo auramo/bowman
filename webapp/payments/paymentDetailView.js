@@ -1,6 +1,8 @@
 import React from 'react'
 import axios from 'axios'
 import './paymentDetailView.less'
+import { parse, isValid } from 'date-fns'
+import { parseDate } from '../../common/date'
 
 const fetchChoiceData = async () => {
   const {
@@ -39,6 +41,8 @@ const savePayment = async payment => {
     await axios.post('/api/payment/', payment)
   }
 }
+
+const validDate = candidate => !!parseDate(candidate)
 
 export default class PaymentDetailView extends React.PureComponent {
   constructor(props) {
@@ -125,18 +129,20 @@ export default class PaymentDetailView extends React.PureComponent {
                     })
                   }
                 />
-                <label className="form-label">Päivä</label>
-                <input
-                  className="form-input"
-                  type="text"
-                  placeholder="PP.KK.VVVV"
-                  value={this.state.payment.paymentDate}
-                  onChange={newVal =>
-                    this.setState({
-                      payment: { ...this.state.payment, paymentDate: newVal.target.value }
-                    })
-                  }
-                />
+                <div className={`form-group ${validDate(this.state.payment.paymentDate) ? '' : 'has-error'}`}>
+                  <label className="form-label">Päivä</label>
+                  <input
+                    className="form-input"
+                    type="text"
+                    placeholder="PP.KK.VVVV"
+                    value={this.state.payment.paymentDate}
+                    onChange={newVal =>
+                      this.setState({
+                        payment: { ...this.state.payment, paymentDate: newVal.target.value }
+                      })
+                    }
+                  />
+                </div>
                 <label className="form-label">Lisätiedot</label>
                 <textarea
                   className="form-input"
