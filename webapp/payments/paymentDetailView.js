@@ -23,16 +23,17 @@ const fetchPayment = async paymentId => {
   const {
     data: { payment }
   } = await axios.get(`/api/payment?paymentId=${paymentId}`)
-  console.log(payment)
   return { payment }
 }
 
+const notSelectedListValue = 'not-selected'
+
 const createNewPayment = () => ({
   description: '',
-  amount: null,
-  paymentTypeId: null,
-  payerId: null,
-  paymentDate: null
+  amount: '',
+  paymentTypeId: notSelectedListValue,
+  payerId: notSelectedListValue,
+  paymentDate: ''
 })
 
 const savePayment = async payment => {
@@ -48,6 +49,10 @@ const validDate = candidate => !!parseDate(candidate)
 const validAmount = candidate => !!stringToCents(candidate)
 
 const validPayment = candidate => validDate(candidate.paymentDate) && validAmount(candidate.amount)
+
+const validPaymentType = candidate => candidate !== notSelectedListValue
+
+const validPayer = candidate => candidate !== notSelectedListValue
 
 export default class PaymentDetailView extends React.PureComponent {
   constructor(props) {
@@ -66,9 +71,13 @@ export default class PaymentDetailView extends React.PureComponent {
         value={this.state.payment.paymentTypeId}
         onChange={evt => this.setState({ payment: { ...this.state.payment, paymentTypeId: evt.target.value } })}
       >
-        <option value={null}>Valitse</option>
+        <option key={notSelectedListValue} value={notSelectedListValue}>
+          Valitse
+        </option>
         {this.state.paymentTypes.map(paymentType => (
-          <option value={paymentType.id}>{paymentType.description}</option>
+          <option key={paymentType.id} value={paymentType.id}>
+            {paymentType.description}
+          </option>
         ))}
       </select>
     )
@@ -81,9 +90,13 @@ export default class PaymentDetailView extends React.PureComponent {
         value={this.state.payment.payerId}
         onChange={evt => this.setState({ payment: { ...this.state.payment, payerId: evt.target.value } })}
       >
-        <option value={null}>Valitse</option>
+        <option key={notSelectedListValue} value={notSelectedListValue}>
+          Valitse
+        </option>
         {this.state.payers.map(payer => (
-          <option value={payer.id}>{payer.name}</option>
+          <option key={payer.id} value={payer.id}>
+            {payer.name}
+          </option>
         ))}
       </select>
     )
