@@ -1,6 +1,4 @@
 const centsToString = amountCents => {
-  console.log('amointCents', amountCents)
-
   const euros = Math.floor(amountCents / 100)
   //const cents = amountCents % 100 ? `,${amountCents % 100}` : ''
   const cents = amountCents % 100 ? `,${amountCents % 100}` : ',00'
@@ -10,6 +8,7 @@ const centsToString = amountCents => {
 const moneyRegex = /(^\$?[\d]+),?(\d*?$)/
 
 const stringToCents = euroString => {
+  if (!euroString) return null
   const result = euroString.match(moneyRegex)
   if (result) {
     const rawCents = result[2] || '0'

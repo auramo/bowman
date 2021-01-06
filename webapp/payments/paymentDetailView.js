@@ -3,6 +3,7 @@ import axios from 'axios'
 import './paymentDetailView.less'
 import { parse, isValid } from 'date-fns'
 import { parseDate } from '../../common/date'
+import { stringToCents } from '../../common/money'
 
 const fetchChoiceData = async () => {
   const {
@@ -43,6 +44,8 @@ const savePayment = async payment => {
 }
 
 const validDate = candidate => !!parseDate(candidate)
+
+const validAmount = candidate => !!stringToCents(candidate)
 
 export default class PaymentDetailView extends React.PureComponent {
   constructor(props) {
@@ -117,18 +120,20 @@ export default class PaymentDetailView extends React.PureComponent {
                 {this.renderPaymentTypes()}
                 <label className="form-label">Maksaja</label>
                 {this.renderPayers()}
-                <label className="form-label">Hinta</label>
-                <input
-                  className="form-input"
-                  type="text"
-                  placeholder="Hinta euroina"
-                  value={this.state.payment.amount}
-                  onChange={newVal =>
-                    this.setState({
-                      payment: { ...this.state.payment, amount: newVal.target.value }
-                    })
-                  }
-                />
+                <div className={`form-group ${validAmount(this.state.payment.amount) ? '' : 'has-error'}`}>
+                  <label className="form-label">Hinta</label>
+                  <input
+                    className="form-input"
+                    type="text"
+                    placeholder="Hinta euroina"
+                    value={this.state.payment.amount}
+                    onChange={newVal =>
+                      this.setState({
+                        payment: { ...this.state.payment, amount: newVal.target.value }
+                      })
+                    }
+                  />
+                </div>
                 <div className={`form-group ${validDate(this.state.payment.paymentDate) ? '' : 'has-error'}`}>
                   <label className="form-label">Päivä</label>
                   <input
