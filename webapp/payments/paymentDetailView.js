@@ -66,7 +66,8 @@ export default class PaymentDetailView extends React.PureComponent {
     this.state = {
       paymentTypes: null,
       selectedPaymentType: null,
-      payment: createNewPayment()
+      payment: createNewPayment(),
+      error: null
     }
   }
 
@@ -109,12 +110,17 @@ export default class PaymentDetailView extends React.PureComponent {
   }
 
   async componentDidMount() {
-    const { paymentTypes } = await fetchChoiceData()
-    const { payers } = await fetchPayers()
-    this.setState({ paymentTypes, payers })
-    if (this.props.paymentId) {
-      const { payment } = await fetchPayment(this.props.paymentId)
-      this.setState({ payment })
+    try {
+      const { paymentTypes } = await fetchChoiceData()
+      const { payers } = await fetchPayers()
+      this.setState({ paymentTypes, payers })
+      if (this.props.paymentId) {
+        const { payment } = await fetchPayment(this.props.paymentId)
+        this.setState({ payment })
+      }
+    } catch (e) {
+      console.log('Got exception while mounting', e)
+      this.setState({ error: 'Virhe tietojen haussa' })
     }
   }
 
@@ -186,20 +192,30 @@ export default class PaymentDetailView extends React.PureComponent {
             <div className="loading loading-lg" />
           )}
 
-          <div className="modal-footer">
-            <button className="btn btn-error b__delete-payment" disabled={!this.state.payment.id}>
-              Poista
-            </button>
-            <button
-              className="btn btn-primary"
-              onClick={async () => {
-                await savePayment(this.state.payment)
-                this.props.stopEditing(true)
-              }}
-              disabled={!validPayment(this.state.payment)}
+          <div className="b__payment-detail-footer modal-footer">
+            <span
+              className={`label label-error animate__animated ${
+                this.state.error ? 'animate__rubberBand' : 'b__detail-error-indicator--hidden'
+              }`}
             >
-              Tallenna
-            </button>
+              {this.state.error ? this.state.error.toString() : ''}
+            </span>
+
+            <div>
+              <button className="btn btn-error b__delete-payment" disabled={!this.state.payment.id}>
+                Poista
+              </button>
+              <button
+                className="btn btn-primary"
+                onClick={async () => {
+                  await savePayment(this.state.payment)
+                  this.props.stopEditing(true)
+                }}
+                disabled={!validPayment(this.state.payment)}
+              >
+                Tallenna
+              </button>
+            </div>
           </div>
         </div>
       </div>
