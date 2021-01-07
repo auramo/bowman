@@ -44,6 +44,8 @@ const savePayment = async payment => {
   }
 }
 
+const deletePayment = async paymentId => await axios.delete(`/api/payment?paymentId=${paymentId}`)
+
 const validPaymentType = candidate => candidate !== notSelectedListValue
 
 const validPayer = candidate => candidate !== notSelectedListValue
@@ -80,6 +82,17 @@ export default class PaymentDetailView extends React.PureComponent {
     } catch (e) {
       console.log('Got exception while saving', e)
       this.setState({ error: 'Virhe tallennuksessa' })
+    }
+  }
+
+  async delete() {
+    try {
+      this.setState({ saving: true })
+      await deletePayment(this.state.payment.id)
+      this.props.stopEditing(true)
+    } catch (e) {
+      console.log('Got exception while deleting', e)
+      this.setState({ error: 'Virhe poistossa' })
     }
   }
 
@@ -214,7 +227,11 @@ export default class PaymentDetailView extends React.PureComponent {
             </span>
 
             <div>
-              <button className="btn btn-error b__delete-payment" disabled={!this.state.payment.id}>
+              <button
+                className="btn btn-error b__delete-payment"
+                disabled={!this.state.payment.id || this.state.saving}
+                onClick={async () => this.delete()}
+              >
                 Poista
               </button>
               <button

@@ -103,4 +103,8 @@ const updatePayment = async (payment, userId) => {
   )
 }
 
-module.exports = { getPayments, getPayment, addPayment, updatePayment }
+const deletePayment = async paymentId => {
+  await db.query(`DELETE FROM payment WHERE id = $1`, [paymentId])
+}
+
+module.exports = { getPayments, getPayment, addPayment, updatePayment, deletePayment }

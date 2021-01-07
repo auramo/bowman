@@ -27,6 +27,11 @@ module.exports.init = app => {
     res.json({})
   })
 
+  app.delete('/api/payment', async (req, res) => {
+    await paymentRepository.deletePayment(req.query.paymentId)
+    res.json({})
+  })
+
   app.get('/api/paymentTypes', async (req, res) => {
     const paymentTypes = await paymentTypeRepository.getPaymentTypes()
     res.json({ paymentTypes })
