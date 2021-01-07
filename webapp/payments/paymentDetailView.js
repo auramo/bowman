@@ -230,7 +230,11 @@ export default class PaymentDetailView extends React.PureComponent {
               <button
                 className="btn btn-error b__delete-payment"
                 disabled={!this.state.payment.id || this.state.saving}
-                onClick={async () => this.delete()}
+                onClick={async () => {
+                  if (confirm('Poistetaanko maksu?')) {
+                    this.delete()
+                  }
+                }}
               >
                 Poista
               </button>
