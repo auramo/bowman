@@ -67,12 +67,14 @@ export default class PaymentDetailView extends React.PureComponent {
       paymentTypes: null,
       selectedPaymentType: null,
       payment: createNewPayment(),
-      error: null
+      error: null,
+      saving: false
     }
   }
 
   async save() {
     try {
+      this.setState({ saving: true })
       await savePayment(this.state.payment)
       this.props.stopEditing(true)
     } catch (e) {
@@ -218,7 +220,7 @@ export default class PaymentDetailView extends React.PureComponent {
               <button
                 className="btn btn-primary"
                 onClick={async () => this.save()}
-                disabled={!validPayment(this.state.payment)}
+                disabled={!validPayment(this.state.payment) || this.state.saving}
               >
                 Tallenna
               </button>
