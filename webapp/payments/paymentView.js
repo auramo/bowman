@@ -10,6 +10,19 @@ import PaymentDetailView from './paymentDetailView'
 import { centsToString } from './payment'
 import './paymentView.less'
 
+const processSummary = summary => {
+  let min = null
+  let minPayerId = null
+  summary.forEach(row => {
+    if (min === null || row.sum < min) {
+      min = row.sum
+      minPayerId = row.id
+      console.log({ min, minPayerId })
+    }
+  })
+  return summary.map(row => (row.id === minPayerId ? { ...row, minPayer: true } : row))
+}
+
 class PaymentsTable extends React.PureComponent {
   constructor(props) {
     super(props)
@@ -112,7 +125,8 @@ export default class PaymentView extends React.PureComponent {
       filterString: null,
       savedIndicatorClass: 'b__saved-indicator--hidden',
       editing: false,
-      paymentId: null
+      paymentId: null,
+      summary: []
     }
   }
 
@@ -148,8 +162,20 @@ export default class PaymentView extends React.PureComponent {
     }
   }
 
+  async fetchSummary() {
+    try {
+      const response = await axios.get('/api/summary')
+      this.setState({
+        summary: processSummary(response.data.summary)
+      })
+    } catch (error) {
+      handleError(error)
+    }
+  }
+
   async componentDidMount() {
     await this.fetchPayments()
+    await this.fetchSummary()
   }
 
   render() {
@@ -191,7 +217,19 @@ export default class PaymentView extends React.PureComponent {
               <div className="loading loading-lg" />
             )}
           </div>
-          <div className="b__payments-footer">{this.state.payments ? this.state.payments.length + ' kpl' : ''}</div>
+          <div className="b__payments-footer">
+            <div>
+              {this.state.summary.map((summaryRow, index) => (
+                <span style={{ marginRight: '10px' }} key={index}>
+                  {summaryRow.payer}:{' '}
+                  <span style={{ color: summaryRow.minPayer ? '#e85600' : '#32b643' }}>
+                    {centsToString(summaryRow.sum)}
+                  </span>
+                </span>
+              ))}
+            </div>
+            <div>{this.state.payments ? this.state.payments.length + ' kpl' : ''}</div>
+          </div>
         </div>
       </div>
     )

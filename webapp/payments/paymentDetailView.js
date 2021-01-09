@@ -1,7 +1,6 @@
 import React from 'react'
 import axios from 'axios'
 import './paymentDetailView.less'
-import { parse, isValid } from 'date-fns'
 import { parseDate } from '../../common/date'
 import { stringToCents } from '../../common/money'
 

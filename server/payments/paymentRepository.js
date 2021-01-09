@@ -24,6 +24,21 @@ const getPayments = async userId => {
   return camelize(rawPayments)
 }
 
+const getSummary = async userId => {
+  const summary = await db.query(
+    `SELECT SUM(amount_cents) as sum, 
+                ua.name as payer, 
+                ua.id 
+    FROM payment p join user_account ua on p.user_account_id = ua.id 
+    WHERE p.payment_group_id = (SELECT pg.id FROM payment_group pg 
+                                JOIN payment_group_user pgu ON pg.id = pgu.payment_group_id 
+                                WHERE pgu.user_account_id = 2) 
+    GROUP BY ua.id`,
+    [userId]
+  )
+  return camelize(summary)
+}
+
 const getPayment = async paymentId => {
   console.log('getPayment', paymentId)
   const rawPayments = await db.query(
@@ -107,4 +122,4 @@ const deletePayment = async paymentId => {
   await db.query(`DELETE FROM payment WHERE id = $1`, [paymentId])
 }
 
-module.exports = { getPayments, getPayment, addPayment, updatePayment, deletePayment }
+module.exports = { getPayments, getSummary, getPayment, addPayment, updatePayment, deletePayment }

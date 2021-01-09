@@ -8,6 +8,11 @@ module.exports.init = app => {
     res.json({ payments })
   })
 
+  app.get('/api/summary', async (req, res) => {
+    const summary = await paymentRepository.getSummary(req.user.id)
+    res.json({ summary })
+  })
+
   app.get('/api/payment', async (req, res) => {
     const payment = await paymentRepository.getPayment(req.query.paymentId)
     res.json({ payment })
