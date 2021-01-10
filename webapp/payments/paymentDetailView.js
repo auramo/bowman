@@ -2,6 +2,7 @@ import React from 'react'
 import axios from 'axios'
 import './paymentDetailView.less'
 import { parseDate } from '../../common/date'
+const { format } = require('date-fns')
 import { stringToCents } from '../../common/money'
 
 const fetchChoiceData = async () => {
@@ -32,7 +33,7 @@ const createNewPayment = () => ({
   amount: '',
   paymentTypeId: notSelectedListValue,
   payerId: notSelectedListValue,
-  paymentDate: ''
+  paymentDate: format(new Date(), 'DD.MM.YYYY')
 })
 
 const savePayment = async payment => {
