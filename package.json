@@ -49,7 +49,7 @@
     "db-migrate": "^0.10.2",
     "db-migrate-pg": "^0.2.5",
     "dotenv": "^4.0.0",
-    "express": "^4.16.2",
+    "express": "^4.17.3",
     "express-promise-router": "^3.0.3",
     "express-session": "^1.15.6",
     "kefir": "^3.8.3",
