@@ -1,4 +1,4 @@
-const express = require('express')
+const path = require('path')
 const {errorResponse} = require('../requestHelpers')
 const R = require('ramda')
 
@@ -23,8 +23,8 @@ const loginCheck = (req, res, next) => {
   }
 }
 
-const loginPage = (req, res, next) =>
-  express.static(`${__dirname}/../../web-resources/login.html`)(req, res, next)
+const loginPage = (req, res) =>
+  res.sendFile(path.resolve(__dirname, '../../web-resources/login.html'))
 
 module.exports.init = app => {
 

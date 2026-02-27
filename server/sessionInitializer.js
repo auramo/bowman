@@ -8,7 +8,7 @@ const sessionOptions = {
   saveUninitialized: true,
   cookie: {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: false},
   store: new pgSession({
-    pool : db.$pool,
+    pgPromise : db,
     tableName : 'user_sessions'
   })
 }

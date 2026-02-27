@@ -60,11 +60,11 @@ module.exports.init = app => {
     done(null, user);
   })
 
-  app.get('/auth/googlelogin*', (req, res) => {
+  app.get('/auth/googlelogin*', (req, res, next) => {
     req.session.desiredUrlAfterLogin = req.url.substr('/auth/googlelogin'.length)
       return passport.authenticate('google',
-        {scope: ['https://www.googleapis.com/auth/plus.login', 'profile', 'email'], state: null}
-      )(req, res)
+        {scope: ['profile', 'email'], state: null}
+      )(req, res, next)
   })
 
   app.get('/auth/google/callback', (req, res, next) => {
