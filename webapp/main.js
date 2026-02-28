@@ -1,6 +1,6 @@
 import './app-styles/style.less'
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import { Provider } from 'react-redux'
 
 import { store } from './store'
@@ -8,11 +8,10 @@ import routes from './routes'
 import { Router } from './router'
 
 function renderApp() {
-  ReactDOM.render(
+  createRoot(document.getElementById('main')).render(
     <Provider store={store}>
       <Router routes={routes} />
-    </Provider>,
-    document.getElementById('main')
+    </Provider>
   )
 }
 

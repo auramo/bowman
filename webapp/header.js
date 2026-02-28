@@ -16,7 +16,7 @@ class Header extends React.Component {
     this.state = {}
   }
 
-  componentWillMount() {
+  componentDidMount() {
     axios
       .get('/api/user/')
       .then(resp => this.setState({ user: resp.data.user }))
