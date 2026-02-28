@@ -32,7 +32,7 @@ const getSummary = async userId => {
     FROM payment p join user_account ua on p.user_account_id = ua.id 
     WHERE p.payment_group_id = (SELECT pg.id FROM payment_group pg 
                                 JOIN payment_group_user pgu ON pg.id = pgu.payment_group_id 
-                                WHERE pgu.user_account_id = 2) 
+                                WHERE pgu.user_account_id = $1)
     GROUP BY ua.id`,
     [userId]
   )
