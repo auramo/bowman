@@ -12,7 +12,8 @@ if [[ -z "${DOCKER_REPO}" ]]; then
   exit 1
 fi
 
-docker build -t "${DOCKER_REPO}:bowman$(git rev-parse --short HEAD)" -t "${DOCKER_REPO}" .
-docker push "${DOCKER_REPO}"
+
+podman build --platform linux/amd64 -t "${DOCKER_REPO}:bowman$(git rev-parse --short HEAD)" -t "${DOCKER_REPO}" .
+podman push "${DOCKER_REPO}"
 
 echo "Done!"

@@ -13,8 +13,7 @@ PostgreSQL major version upgrades require a dump-and-restore because the interna
 ### 1. Dump data from the old PostgreSQL 13 instance
 
 ```bash
-PGHOST=<host> PGPORT=<port> PGUSER=bowman PGPASSWORD=<password> \
-  pg_dump bowman > bowman_pg13_dump.sql
+docker exec bowman_postgres_1 pg_dump -U bowman bowman > bowman_pg13_dump.sql
 ```
 
 Verify the dump file is non-empty and contains your data:
@@ -24,6 +23,14 @@ wc -c bowman_pg13_dump.sql
 grep "COPY public.payment " bowman_pg13_dump.sql
 ```
 
+Test the dump locally on dev machine:
+
+```
+podman stop bowman
+podman rm -v bowman
+podman exec -i bowman psql -U bowman -d bowman < bowman_pg13_dump_1.3.2026.sql
+```
+
 ### 2. Stop the application
 
 Stop the web application so no new data is written during the migration.
@@ -31,53 +38,23 @@ Stop the web application so no new data is written during the migration.
 ### 3. Stop and remove the old PostgreSQL 13 container
 
 ```bash
-docker stop bowman
-docker rm bowman
+
+docker stop bowman_postgres_1
+sudo docker rm -v bowman_postgres_1
 ```
 
 ### 4. Start a new PostgreSQL 18.3 container
 
 ```bash
-docker run -d --name bowman \
-  -p 5435:5432 \
-  -e POSTGRES_DB=bowman \
-  -e POSTGRES_USER=bowman \
-  -e POSTGRES_PASSWORD=<password> \
-  postgres:18.3
-```
-
-Wait a few seconds for PostgreSQL to initialize, then verify it's running:
-
-```bash
-PGHOST=<host> PGPORT=<port> PGUSER=bowman PGPASSWORD=<password> \
-  psql -d bowman -c "SELECT version();"
+# Edit the version 18 to the server's docker-compose.yml, then:
+sudo /usr/local/bin/docker-compose up -d
 ```
 
 ### 5. Restore the dump into PostgreSQL 18.3
 
 ```bash
-PGHOST=<host> PGPORT=<port> PGUSER=bowman PGPASSWORD=<password> \
-  psql -d bowman < bowman_pg13_dump.sql
+sudo docker exec -i bowman_postgres_1 psql -U bowman -d bowman < bowman_pg13_dump.sql
 ```
-
-### 6. Verify the data
-
-```bash
-PGHOST=<host> PGPORT=<port> PGUSER=bowman PGPASSWORD=<password> \
-  psql -d bowman -c "
-    SELECT 'users' as tbl, count(*) FROM user_account
-    UNION ALL SELECT 'payments', count(*) FROM payment
-    UNION ALL SELECT 'payment_types', count(*) FROM payment_type
-    UNION ALL SELECT 'groups', count(*) FROM payment_group
-    UNION ALL SELECT 'group_users', count(*) FROM payment_group_user;
-  "
-```
-
-Compare the row counts against what you had before the migration.
-
-### 7. Start the application
-
-Start the web application and verify it connects and works correctly. Users will need to log in again since session data in the old volume is gone.
 
 ## Notes
 
