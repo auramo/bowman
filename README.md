@@ -32,14 +32,14 @@ We use [dotenv](https://github.com/motdotla/dotenv) for configuration, and the a
 creates the DB configuration for us. Now we'll have to fetch and start the PostgreSQL
 Docker image:
 
-`docker run --name bowman -p 5435:5432 -e POSTGRES_DB=bowman -e POSTGRES_USER=bowman -e POSTGRES_PASSWORD=bowman -d postgres:13`
+`podman run --name bowman -p 5435:5432 -e POSTGRES_DB=bowman -e POSTGRES_USER=bowman -e POSTGRES_PASSWORD=bowman -d postgres:18`
 
 (on Linux you have to prefix the command with sudo)
 
 If the command is successful, you should have a Docker container running the database. You can check that
 it's running with:
 
-`docker ps`
+`podman ps`
 
 You will also need the PostgreSQL command-line client `psql` which comes with the PostgreSQL
 download, or e.g. Homebrew package on Mac. The client [can also be run from the Docker container](https://hub.docker.com/_/postgres/) but looks a bit more complicated than.

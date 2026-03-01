@@ -4,6 +4,7 @@
     "user": {"ENV": "PGUSER"},
     "password": {"ENV": "PGPASSWORD"},
     "host": {"ENV": "PGHOST"},
+    "port": {"ENV": "PGPORT"},
     "database": {"ENV": "PGDATABASE"},
     "schema": {"ENV": "public"}
   }

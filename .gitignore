@@ -3,6 +3,7 @@ node_modules
 .idea
 *.iml
 dist
+dist-server
 .tmp
 .env
 data-to-import
