@@ -63,7 +63,7 @@ class PaymentsTable extends React.PureComponent<PaymentsTableProps> {
                       ) : null}
                     </span>
                   </td>
-                  <td>{format(payment.paymentDate as Date, 'DD.MM.YYYY')}</td>
+                  <td>{format(payment.paymentDate as Date, 'dd.MM.yyyy')}</td>
                   <td>{centsToString(payment.amountCents as number)}</td>
                   <td>{payment.payerName}</td>
                 </tr>

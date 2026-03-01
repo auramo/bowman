@@ -34,7 +34,7 @@ const createNewPayment = (): PaymentFormData => ({
   amount: '',
   paymentTypeId: notSelectedListValue,
   payerId: notSelectedListValue,
-  paymentDate: format(new Date(), 'DD.MM.YYYY')
+  paymentDate: format(new Date(), 'dd.MM.yyyy')
 })
 
 const savePayment = async (payment: PaymentFormData): Promise<void> => {

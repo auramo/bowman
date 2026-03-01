@@ -56,7 +56,7 @@ export const getPayment = async (paymentId: string): Promise<PaymentDetail | nul
   const merged: Record<string, unknown> = {
     ...dbPayment,
     amount: money.centsToString(dbPayment.amountCents as number),
-    paymentDate: format(dbPayment.paymentDate as Date, 'DD.MM.YYYY')
+    paymentDate: format(dbPayment.paymentDate as Date, 'dd.MM.yyyy')
   }
   delete merged.amountCents
   return merged as unknown as PaymentDetail
