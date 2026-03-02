@@ -158,6 +158,7 @@ export default class PaymentView extends React.PureComponent<Record<string, stri
     })
     if (saved) {
       this.fetchPayments()
+      this.fetchSummary()
       setTimeout(() => this.setState({ savedIndicatorClass: 'animate__backOutDown' }), 4000)
     }
   }
