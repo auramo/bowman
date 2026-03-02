@@ -5,7 +5,7 @@ import * as money from '../../common/money'
 import { format } from 'date-fns'
 import { parseDate } from '../../common/date'
 import { v4 as uuidv4 } from 'uuid'
-import { PaymentListItem, PaymentDetail, PaymentFormData, SummaryRow } from '../../common/types'
+import { PaymentListItem, PaymentDetail, PaymentFormData, SummaryRow, SummaryResponse } from '../../common/types'
 
 export const getPayments = async (userId: number): Promise<PaymentListItem[]> => {
   const rawPayments = await db.query(
@@ -24,7 +24,7 @@ export const getPayments = async (userId: number): Promise<PaymentListItem[]> =>
   return camelize<PaymentListItem[]>(rawPayments)
 }
 
-export const getSummary = async (userId: number): Promise<SummaryRow[]> => {
+export const getSummary = async (userId: number): Promise<SummaryResponse> => {
   const summary = await db.query(
     `SELECT SUM(amount_cents) as sum,
                 ua.name as payer,
@@ -36,7 +36,31 @@ export const getSummary = async (userId: number): Promise<SummaryRow[]> => {
     GROUP BY ua.id`,
     [userId]
   )
-  return camelize<SummaryRow[]>(summary)
+  const camelized = camelize<SummaryRow[]>(summary)
+
+  let min: number | null = null
+  let minPayerId: number | null = null
+  camelized.forEach(row => {
+    if (min === null || row.sum < min) {
+      min = row.sum
+      minPayerId = row.id
+    }
+  })
+  const enrichedSummary = camelized.map(row =>
+    row.id === minPayerId ? { ...row, minPayer: true } : row
+  )
+
+  const countResult = await db.query(
+    `SELECT COUNT(*)::int as count
+     FROM payment p
+     WHERE p.payment_group_id = (SELECT pg.id FROM payment_group pg
+                                  JOIN payment_group_user pgu ON pg.id = pgu.payment_group_id
+                                  WHERE pgu.user_account_id = $1)`,
+    [userId]
+  )
+  const paymentCount: number = countResult[0].count
+
+  return { summary: enrichedSummary, paymentCount }
 }
 
 export const getPayment = async (paymentId: string): Promise<PaymentDetail | null> => {
