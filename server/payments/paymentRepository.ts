@@ -7,7 +7,12 @@ import { parseDate } from '../../common/date'
 import { v4 as uuidv4 } from 'uuid'
 import { PaymentListItem, PaymentDetail, PaymentFormData, SummaryRow, SummaryResponse } from '../../common/types'
 
-export const getPayments = async (userId: number, search?: string): Promise<PaymentListItem[]> => {
+export const getPayments = async (
+  userId: number,
+  search?: string,
+  limit: number = 200,
+  offset: number = 0
+): Promise<PaymentListItem[]> => {
   const searchClause = search
     ? `AND (
         pua.name ILIKE $2
@@ -16,7 +21,11 @@ export const getPayments = async (userId: number, search?: string): Promise<Paym
         OR CAST(p.amount_cents AS TEXT) ILIKE $2
       )`
     : ''
-  const params = search ? [userId, `%${search}%`] : [userId]
+  const nextParam = search ? 3 : 2
+  const pagingClause = `LIMIT $${nextParam} OFFSET $${nextParam + 1}`
+  const params = search
+    ? [userId, `%${search}%`, limit + 1, offset]
+    : [userId, limit + 1, offset]
   const rawPayments = await db.query(
     `SELECT p.id, p.amount_cents, p.payment_date, pua.name as payer_name,
       pt.description as payment_type, p.description
@@ -28,7 +37,8 @@ export const getPayments = async (userId: number, search?: string): Promise<Paym
      JOIN payment_type pt ON p.payment_type_id = pt.id
      WHERE gua.id = $1
      ${searchClause}
-     ORDER BY p.payment_date desc`,
+     ORDER BY p.payment_date desc
+     ${pagingClause}`,
     params
   )
   return camelize<PaymentListItem[]>(rawPayments)

@@ -13,14 +13,24 @@ import { PaymentListItem, SummaryRow } from '../../common/types'
 interface PaymentsTableProps {
   payments: PaymentListItem[]
   startEditing: (paymentId: string) => void
+  offset: number
+  hasMore: boolean
+  onPreviousPage: () => void
+  onNextPage: () => void
+  listRef: React.RefObject<HTMLDivElement | null>
 }
 
 class PaymentsTable extends React.PureComponent<PaymentsTableProps> {
   render() {
-    const { payments } = this.props
+    const { payments, offset, hasMore, onPreviousPage, onNextPage, listRef } = this.props
     return (
       <React.Fragment>
-        <div className="b__payment-list">
+        <div className="b__payment-list" ref={listRef}>
+          {offset > 0 && (
+            <div className="b__paging-buttons">
+              <button className="btn" onClick={onPreviousPage}>Edelliset 200</button>
+            </div>
+          )}
           <table className="table table-striped b__payment-table">
             <thead>
               <tr>
@@ -56,6 +66,11 @@ class PaymentsTable extends React.PureComponent<PaymentsTableProps> {
               ))}
             </tbody>
           </table>
+          {hasMore && (
+            <div className="b__paging-buttons">
+              <button className="btn" onClick={onNextPage}>Seuraavat 200</button>
+            </div>
+          )}
         </div>
       </React.Fragment>
     )
@@ -107,9 +122,14 @@ interface PaymentViewState {
   paymentId: string | null
   summary: SummaryRow[]
   paymentCount: number | null
+  offset: number
+  hasMore: boolean
+  currentSearch: string | undefined
 }
 
 export default class PaymentView extends React.PureComponent<Record<string, string>, PaymentViewState> {
+  private paymentListRef = React.createRef<HTMLDivElement>()
+
   constructor(props: Record<string, string>) {
     super(props)
     this.state = {
@@ -119,7 +139,10 @@ export default class PaymentView extends React.PureComponent<Record<string, stri
       editing: false,
       paymentId: null,
       summary: [],
-      paymentCount: null
+      paymentCount: null,
+      offset: 0,
+      hasMore: false,
+      currentSearch: undefined
     }
   }
 
@@ -145,16 +168,35 @@ export default class PaymentView extends React.PureComponent<Record<string, stri
     }
   }
 
-  async fetchPayments(search?: string) {
-    this.setState({ searching: !!search })
+  async fetchPayments(search?: string, offset: number = 0) {
+    this.setState({ searching: true })
     try {
-      const params = search ? `?search=${encodeURIComponent(search)}` : ''
-      const response = await axios.get(`/api/payments${params}`)
-      this.setState({ payments: response.data.payments, searching: false })
+      const params = new URLSearchParams()
+      if (search) params.set('search', search)
+      if (offset > 0) params.set('offset', String(offset))
+      const qs = params.toString()
+      const response = await axios.get(`/api/payments${qs ? `?${qs}` : ''}`)
+      this.setState({
+        payments: response.data.payments,
+        hasMore: response.data.hasMore,
+        offset,
+        currentSearch: search,
+        searching: false
+      })
     } catch (error) {
       this.setState({ searching: false })
       handleError(error)
     }
+  }
+
+  async loadNextPage() {
+    await this.fetchPayments(this.state.currentSearch, this.state.offset + 200)
+    this.paymentListRef.current?.scrollTo(0, 0)
+  }
+
+  async loadPreviousPage() {
+    await this.fetchPayments(this.state.currentSearch, Math.max(0, this.state.offset - 200))
+    this.paymentListRef.current?.scrollTo(0, this.paymentListRef.current.scrollHeight)
   }
 
   async fetchSummary() {
@@ -196,9 +238,9 @@ export default class PaymentView extends React.PureComponent<Record<string, stri
             </button>
             <SearchField filterValue={(value: string) => {
               if (value.length >= 2) {
-                this.fetchPayments(value)
+                this.fetchPayments(value, 0)
               } else if (value.length === 0) {
-                this.fetchPayments()
+                this.fetchPayments(undefined, 0)
               }
             }} />
             <div className="b__grow_filler" />
@@ -216,6 +258,11 @@ export default class PaymentView extends React.PureComponent<Record<string, stri
               <PaymentsTable
                 payments={this.state.payments}
                 startEditing={(paymentId: string) => this.startEditing(paymentId)}
+                offset={this.state.offset}
+                hasMore={this.state.hasMore}
+                onPreviousPage={() => this.loadPreviousPage()}
+                onNextPage={() => this.loadNextPage()}
+                listRef={this.paymentListRef}
               />
             ) : (
               <div className="loading loading-lg" />

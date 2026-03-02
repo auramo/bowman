@@ -6,8 +6,11 @@ import * as payerRepository from './payerRepository'
 export const init = (app: Router): void => {
   app.get('/api/payments', async (req, res) => {
     const search = req.query.search as string | undefined
-    const payments = await paymentRepository.getPayments(req.user!.id, search)
-    res.json({ payments })
+    const offset = parseInt(req.query.offset as string) || 0
+    const limit = 200
+    const payments = await paymentRepository.getPayments(req.user!.id, search, limit, offset)
+    const hasMore = payments.length > limit
+    res.json({ payments: payments.slice(0, limit), hasMore })
   })
 
   app.get('/api/summary', async (req, res) => {
