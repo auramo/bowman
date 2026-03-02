@@ -2,12 +2,28 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Log in</title>
     <link rel="stylesheet" href="https://unpkg.com/spectre.css/dist/spectre.min.css">
+    <style>
+        #loginControl {
+            display: flex;
+            justify-content: center;
+            margin-top: 80px;
+        }
+        #loginControl .btn {
+            font-size: 1.2rem;
+        }
+        #login-failed-indicator {
+            margin: 30px;
+            display: none;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-<div id="login-failed-indicator" style="margin: 30px 0 0 30px; display: none;" class="label label-error">Login failed</div>
-<div style="margin: 30px;" id="loginControl"></div>
+<div id="login-failed-indicator" class="label label-error">Login failed</div>
+<div id="loginControl"></div>
 <script type="text/javascript">
   var pathAndQuery = window.location.pathname + window.location.search
   var desiredUrlAfterLogin = ''
@@ -16,7 +32,7 @@
   } else {
     desiredUrlAfterLogin = pathAndQuery.substr('/login'.length)
   }
-  var loginLink = '<a class="btn btn-primary" href="/auth/googlelogin' + desiredUrlAfterLogin + '" class="btn">Kirjaudu Googlen kautta</a>'
+  var loginLink = '<a class="btn btn-primary btn-lg" href="/auth/googlelogin' + desiredUrlAfterLogin + '">Kirjaudu Googlen kautta</a>'
   document.getElementById('loginControl').innerHTML += loginLink
 </script>
 </body>
