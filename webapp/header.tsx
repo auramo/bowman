@@ -7,6 +7,10 @@ import { handleError } from './errors/error-dispatch'
 import { RootState } from './store'
 import { UserAccount } from '../common/types'
 
+const getAvatarIndex = (name: string): number => {
+  return (name.charCodeAt(0) + 5) % 5 + 1
+}
+
 const tabs: Record<string, { label: string; location: string }> = {
   payments: { label: 'Maksut', location: '/payments' }
 }
@@ -50,6 +54,11 @@ class Header extends React.Component<HeaderProps, HeaderState> {
           {this.props.error ? (
             <span className="label label-error">{String(this.props.error)}</span>
           ) : null}
+          {this.state.user?.name && (
+            <figure className="avatar avatar-sm mr-2">
+              <img src={`img/avatar-${getAvatarIndex(this.state.user.name)}.png`} />
+            </figure>
+          )}
           <span className="text-gray mr-2">{this.state.user?.name}</span>
           <a className="btn btn-sm mr-2" href="/logout">
             Kirjaudu ulos
