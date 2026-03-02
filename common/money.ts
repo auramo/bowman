@@ -4,6 +4,13 @@ export const centsToString = (amountCents: number): string => {
   return `${euros}${cents}`
 }
 
+export const centsToDisplayString = (amountCents: number): string => {
+  const euros = Math.floor(amountCents / 100)
+  const cents = amountCents % 100 ? `,${amountCents % 100}` : ',00'
+  const euroStr = euros.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0')
+  return `${euroStr}${cents}`
+}
+
 const moneyRegex = /(^\$?[\d]+),?(\d*?$)/
 
 export const stringToCents = (euroString: string): number | null => {

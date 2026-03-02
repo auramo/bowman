@@ -6,7 +6,7 @@ import { handleError } from '../errors/error-dispatch'
 import Header from '../header'
 import { navigateTo } from '../router'
 import PaymentDetailView from './paymentDetailView'
-import { centsToString } from '../../common/money'
+import { centsToString, centsToDisplayString } from '../../common/money'
 import './paymentView.less'
 import { PaymentListItem, SummaryRow } from '../../common/types'
 
@@ -277,7 +277,7 @@ export default class PaymentView extends React.PureComponent<Record<string, stri
                 <span style={{ marginRight: '10px' }} key={index}>
                   {summaryRow.payer}:{' '}
                   <span style={{ color: summaryRow.minPayer ? '#e85600' : '#32b643' }}>
-                    {centsToString(summaryRow.sum)}
+                    {centsToDisplayString(summaryRow.sum)}
                   </span>
                 </span>
               ))}
