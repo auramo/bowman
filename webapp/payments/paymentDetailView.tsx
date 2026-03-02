@@ -214,7 +214,7 @@ export default class PaymentDetailView extends React.PureComponent<PaymentDetail
                   {this.renderPaymentTypes()}
                   {!this.props.paymentId && validPaymentType(this.state.payment.paymentTypeId) && (
                     <button className="btn btn-sm b__copy-previous-btn" onClick={() => this.copyFromPrevious()}>
-                      Kopioi edellisestä
+                      Kopioi Hinta ja lisätiedot edellisestä {this.state.paymentTypes!.find(pt => String(pt.id) === String(this.state.payment.paymentTypeId))?.description}-maksusta
                     </button>
                   )}
                 </div>
