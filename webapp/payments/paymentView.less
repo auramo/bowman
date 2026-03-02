@@ -65,17 +65,36 @@
 }
 
 .b__saved-indicator {
-  height: 26px;
+  position: relative;
+  height: 30px;
+  overflow: visible;
 }
 
-.b__saved-indicator--hidden {
+.b__saved-indicator--hidden .b__bill {
   display: none;
 }
 
-.animate__animated.animate__bounceOutDown {
-  --animate-duration: 2s;
+.b__bill {
+  font-size: 1.6rem;
+  display: inline-block;
+  opacity: 0;
 }
 
-.animate__animated.animate__bounceInDown {
-  --animate-duration: 2s;
+.b__money-fly .b__bill {
+  animation: flyAway 2.5s ease-out forwards;
+}
+
+@keyframes flyAway {
+  0% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-40px) rotate(-15deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100px) rotate(20deg);
+  }
 }

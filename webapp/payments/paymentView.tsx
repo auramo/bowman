@@ -147,8 +147,8 @@ export default class PaymentView extends React.PureComponent<Record<string, stri
   }
 
   notifySaved() {
-    this.setState({ savedIndicatorClass: 'animate__backInDown' })
-    setTimeout(() => this.setState({ savedIndicatorClass: 'animate__backOutDown' }), 4000)
+    this.setState({ savedIndicatorClass: 'b__money-fly' })
+    setTimeout(() => this.setState({ savedIndicatorClass: 'b__saved-indicator--hidden' }), 3000)
   }
 
   startEditing(paymentId: string) {
@@ -159,12 +159,12 @@ export default class PaymentView extends React.PureComponent<Record<string, stri
     this.setState({
       editing: false,
       paymentId: null,
-      savedIndicatorClass: saved ? 'animate__backInDown' : 'b__saved-indicator--hidden'
+      savedIndicatorClass: saved ? 'b__money-fly' : 'b__saved-indicator--hidden'
     })
     if (saved) {
       this.fetchPayments()
       this.fetchSummary()
-      setTimeout(() => this.setState({ savedIndicatorClass: 'animate__backOutDown' }), 4000)
+      setTimeout(() => this.setState({ savedIndicatorClass: 'b__saved-indicator--hidden' }), 3000)
     }
   }
 
@@ -244,10 +244,13 @@ export default class PaymentView extends React.PureComponent<Record<string, stri
               }
             }} />
             <div className="b__grow_filler" />
-            <div
-              className={`b__saved-indicator label label-success animate__animated ${this.state.savedIndicatorClass}`}
-            >
-              Tallennettu
+            <div className={`b__saved-indicator ${this.state.savedIndicatorClass}`}>
+              <span className="b__bill" style={{ animationDelay: '0s' }}>💸</span>
+              <span className="b__bill" style={{ animationDelay: '0.15s' }}>💸</span>
+              <span className="b__bill" style={{ animationDelay: '0.3s' }}>💸</span>
+              <span className="b__bill" style={{ animationDelay: '0.1s' }}>💵</span>
+              <span className="b__bill" style={{ animationDelay: '0.25s' }}>💸</span>
+              <span className="b__bill" style={{ animationDelay: '0.4s' }}>💵</span>
             </div>
           </div>
           <div className="divider" />
