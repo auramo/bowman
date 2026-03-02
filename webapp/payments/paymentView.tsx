@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { format } from 'date-fns'
 import * as _ from 'lodash'
-import * as R from 'ramda'
 import React from 'react'
 import { handleError } from '../errors/error-dispatch'
 import Header from '../header'
@@ -63,23 +62,6 @@ class PaymentsTable extends React.PureComponent<PaymentsTableProps> {
   }
 }
 
-const filterPayments = (filterString: string | null, payments: PaymentListItem[]): PaymentListItem[] => {
-  if (!filterString) return payments
-  const matchesSubString = (fieldValue: unknown): boolean => {
-    if (fieldValue) {
-      return fieldValue
-        .toString()
-        .toLowerCase()
-        .includes(filterString.toLowerCase())
-    } else {
-      return false
-    }
-  }
-  return payments.filter(payment => {
-    const fieldValues = R.values(R.pick(['paymentType', 'description', 'amountCents', 'payerName'], payment))
-    return fieldValues.some(matchesSubString)
-  })
-}
 
 interface SearchFieldProps {
   filterValue: (value: string) => void
@@ -119,7 +101,7 @@ class SearchField extends React.PureComponent<SearchFieldProps, SearchFieldState
 
 interface PaymentViewState {
   payments: PaymentListItem[] | null
-  filterString: string | null
+  searching: boolean
   savedIndicatorClass: string
   editing: boolean
   paymentId: string | null
@@ -132,7 +114,7 @@ export default class PaymentView extends React.PureComponent<Record<string, stri
     super(props)
     this.state = {
       payments: null,
-      filterString: null,
+      searching: false,
       savedIndicatorClass: 'b__saved-indicator--hidden',
       editing: false,
       paymentId: null,
@@ -163,13 +145,14 @@ export default class PaymentView extends React.PureComponent<Record<string, stri
     }
   }
 
-  async fetchPayments() {
+  async fetchPayments(search?: string) {
+    this.setState({ searching: !!search })
     try {
-      const response = await axios.get('/api/payments')
-      this.setState({
-        payments: response.data.payments
-      })
+      const params = search ? `?search=${encodeURIComponent(search)}` : ''
+      const response = await axios.get(`/api/payments${params}`)
+      this.setState({ payments: response.data.payments, searching: false })
     } catch (error) {
+      this.setState({ searching: false })
       handleError(error)
     }
   }
@@ -211,7 +194,13 @@ export default class PaymentView extends React.PureComponent<Record<string, stri
             >
               <i className="icon icon-plus" />
             </button>
-            <SearchField filterValue={(value: string) => this.setState({ filterString: value })} />
+            <SearchField filterValue={(value: string) => {
+              if (value.length >= 2) {
+                this.fetchPayments(value)
+              } else if (value.length === 0) {
+                this.fetchPayments()
+              }
+            }} />
             <div className="b__grow_filler" />
             <div
               className={`b__saved-indicator label label-success animate__animated ${this.state.savedIndicatorClass}`}
@@ -221,9 +210,11 @@ export default class PaymentView extends React.PureComponent<Record<string, stri
           </div>
           <div className="divider" />
           <div className="b__payments-content">
-            {this.state.payments ? (
+            {this.state.searching ? (
+              <div className="loading loading-lg" />
+            ) : this.state.payments ? (
               <PaymentsTable
-                payments={filterPayments(this.state.filterString, this.state.payments)}
+                payments={this.state.payments}
                 startEditing={(paymentId: string) => this.startEditing(paymentId)}
               />
             ) : (

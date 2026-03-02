@@ -5,7 +5,8 @@ import * as payerRepository from './payerRepository'
 
 export const init = (app: Router): void => {
   app.get('/api/payments', async (req, res) => {
-    const payments = await paymentRepository.getPayments(req.user!.id)
+    const search = req.query.search as string | undefined
+    const payments = await paymentRepository.getPayments(req.user!.id, search)
     res.json({ payments })
   })
 
