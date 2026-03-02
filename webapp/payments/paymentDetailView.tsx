@@ -173,12 +173,17 @@ export default class PaymentDetailView extends React.PureComponent<PaymentDetail
 
   async componentDidMount() {
     try {
-      const { paymentTypes } = await fetchChoiceData()
-      const { payers } = await fetchPayers()
+      const [{ paymentTypes }, { payers }, { data: { user } }] = await Promise.all([
+        fetchChoiceData(),
+        fetchPayers(),
+        axios.get('/api/user/')
+      ])
       this.setState({ paymentTypes, payers })
       if (this.props.paymentId) {
         const { payment } = await fetchPayment(this.props.paymentId)
         this.setState({ payment })
+      } else {
+        this.setState({ payment: { ...this.state.payment, payerId: user.id } })
       }
     } catch (e) {
       console.log('Got exception while mounting', e)
