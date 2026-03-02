@@ -8,8 +8,7 @@ import { RootState } from './store'
 import { UserAccount } from '../common/types'
 
 const tabs: Record<string, { label: string; location: string }> = {
-  payments: { label: 'Maksut', location: '/payments' },
-  shoppingList: { label: 'Kauppalista', location: '/shoppingList' }
+  payments: { label: 'Maksut', location: '/payments' }
 }
 
 interface HeaderProps {
