@@ -23,18 +23,32 @@
   top: 3px;
 }
 
+.b__payments-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
 .b__payment-list {
-  max-height: calc(~'100vh - 32px - 36px - 36px');
   overflow: auto;
+  flex: 1;
+  min-height: 0;
 }
 
 .b__payments-content {
+  flex: 1;
+  min-height: 0;
   padding-bottom: 31px;
+  display: flex;
+  flex-direction: column;
 }
 
 .b__payments-container {
   display: flex;
   flex-direction: column;
+  flex: 1;
+  min-height: 0;
 }
 
 .b__payments-footer {

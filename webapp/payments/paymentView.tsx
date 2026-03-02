@@ -218,7 +218,7 @@ export default class PaymentView extends React.PureComponent<Record<string, stri
 
   render() {
     return (
-      <div>
+      <div className="b__payments-page">
         <Header selectedTab="payments" />
         {this.state.editing ? (
           <PaymentDetailView paymentId={this.state.paymentId} stopEditing={(saved: boolean) => this.stopEditing(saved)} />
