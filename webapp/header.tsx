@@ -53,7 +53,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
           ) : null}
           <span className="text-gray mr-2">{this.state.user?.name}</span>
           <a className="btn btn-sm mr-2" href="/logout">
-            Log out
+            Kirjaudu ulos
           </a>
         </section>
       </header>
