@@ -70,3 +70,8 @@ export interface SummaryRow {
   id: number
   minPayer?: boolean
 }
+
+export interface SummaryResponse {
+  summary: SummaryRow[]
+  paymentCount: number
+}

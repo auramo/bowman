@@ -11,19 +11,6 @@ import { centsToString } from '../../common/money'
 import './paymentView.less'
 import { PaymentListItem, SummaryRow } from '../../common/types'
 
-const processSummary = (summary: SummaryRow[]): SummaryRow[] => {
-  let min: number | null = null
-  let minPayerId: number | null = null
-  summary.forEach(row => {
-    if (min === null || row.sum < min) {
-      min = row.sum
-      minPayerId = row.id
-      console.log({ min, minPayerId })
-    }
-  })
-  return summary.map(row => (row.id === minPayerId ? { ...row, minPayer: true } : row))
-}
-
 interface PaymentsTableProps {
   payments: PaymentListItem[]
   startEditing: (paymentId: string) => void
@@ -137,6 +124,7 @@ interface PaymentViewState {
   editing: boolean
   paymentId: string | null
   summary: SummaryRow[]
+  paymentCount: number | null
 }
 
 export default class PaymentView extends React.PureComponent<Record<string, string>, PaymentViewState> {
@@ -148,7 +136,8 @@ export default class PaymentView extends React.PureComponent<Record<string, stri
       savedIndicatorClass: 'b__saved-indicator--hidden',
       editing: false,
       paymentId: null,
-      summary: []
+      summary: [],
+      paymentCount: null
     }
   }
 
@@ -188,7 +177,8 @@ export default class PaymentView extends React.PureComponent<Record<string, stri
     try {
       const response = await axios.get('/api/summary')
       this.setState({
-        summary: processSummary(response.data.summary)
+        summary: response.data.summary,
+        paymentCount: response.data.paymentCount
       })
     } catch (error) {
       handleError(error)
@@ -250,7 +240,7 @@ export default class PaymentView extends React.PureComponent<Record<string, stri
                 </span>
               ))}
             </div>
-            <div>{this.state.payments ? this.state.payments.length + ' kpl' : ''}</div>
+            <div>{this.state.paymentCount !== null ? this.state.paymentCount + ' kpl' : ''}</div>
           </div>
         </div>
       </div>

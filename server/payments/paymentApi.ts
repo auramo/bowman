@@ -10,8 +10,8 @@ export const init = (app: Router): void => {
   })
 
   app.get('/api/summary', async (req, res) => {
-    const summary = await paymentRepository.getSummary(req.user!.id)
-    res.json({ summary })
+    const summaryResponse = await paymentRepository.getSummary(req.user!.id)
+    res.json(summaryResponse)
   })
 
   app.get('/api/payment', async (req, res) => {
