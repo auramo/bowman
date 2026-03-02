@@ -18,6 +18,12 @@ export const init = (app: Router): void => {
     res.json(summaryResponse)
   })
 
+  app.get('/api/latestPaymentByType', async (req, res) => {
+    const paymentTypeId = parseInt(req.query.paymentTypeId as string)
+    const payment = await paymentRepository.getLatestPaymentByType(req.user!.id, paymentTypeId)
+    res.json({ payment })
+  })
+
   app.get('/api/payment', async (req, res) => {
     const payment = await paymentRepository.getPayment(req.query.paymentId as string)
     res.json({ payment })

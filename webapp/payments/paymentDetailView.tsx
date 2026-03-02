@@ -27,6 +27,13 @@ const fetchPayment = async (paymentId: string): Promise<{ payment: PaymentFormDa
   return { payment }
 }
 
+const fetchLatestPaymentByType = async (paymentTypeId: number | string): Promise<{ payment: PaymentFormData | null }> => {
+  const {
+    data: { payment }
+  } = await axios.get(`/api/latestPaymentByType?paymentTypeId=${paymentTypeId}`)
+  return { payment }
+}
+
 const notSelectedListValue = 'not-selected'
 
 const createNewPayment = (): PaymentFormData => ({
@@ -99,6 +106,19 @@ export default class PaymentDetailView extends React.PureComponent<PaymentDetail
     } catch (e) {
       console.log('Got exception while saving', e)
       this.setState({ error: 'Virhe tallennuksessa' })
+    }
+  }
+
+  async copyFromPrevious() {
+    const { payment } = await fetchLatestPaymentByType(this.state.payment.paymentTypeId)
+    if (payment) {
+      this.setState({
+        payment: {
+          ...this.state.payment,
+          amount: payment.amount,
+          description: payment.description
+        }
+      })
     }
   }
 
@@ -187,6 +207,11 @@ export default class PaymentDetailView extends React.PureComponent<PaymentDetail
                 <div className={formGroupClassName(validPaymentType, this.state.payment.paymentTypeId)}>
                   <label className="form-label">Tyyppi</label>
                   {this.renderPaymentTypes()}
+                  {!this.props.paymentId && validPaymentType(this.state.payment.paymentTypeId) && (
+                    <button className="btn btn-sm b__copy-previous-btn" onClick={() => this.copyFromPrevious()}>
+                      Kopioi edellisestä
+                    </button>
+                  )}
                 </div>
                 <div className={formGroupClassName(validPayer, this.state.payment.payerId)}>
                   <label className="form-label">Maksaja</label>

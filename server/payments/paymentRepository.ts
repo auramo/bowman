@@ -106,6 +106,32 @@ export const getPayment = async (paymentId: string): Promise<PaymentDetail | nul
   return merged as unknown as PaymentDetail
 }
 
+export const getLatestPaymentByType = async (userId: number, paymentTypeId: number): Promise<PaymentDetail | null> => {
+  const rawPayments = await db.query(
+    `SELECT p.id,
+            p.amount_cents,
+            p.payment_date,
+            p.user_account_id as payer_id,
+            p.payment_type_id, p.description
+     FROM payment p
+     JOIN payment_group pg ON p.payment_group_id = pg.id
+     JOIN payment_group_user pgu ON pg.id = pgu.payment_group_id
+     WHERE pgu.user_account_id = $1 AND p.payment_type_id = $2
+     ORDER BY p.payment_date DESC, p.id DESC
+     LIMIT 1`,
+    [userId, paymentTypeId]
+  )
+  if (rawPayments.length === 0) return null
+  const dbPayment = camelize<Record<string, unknown>>(rawPayments[0])
+  const merged: Record<string, unknown> = {
+    ...dbPayment,
+    amount: money.centsToString(dbPayment.amountCents as number),
+    paymentDate: format(dbPayment.paymentDate as Date, 'dd.MM.yyyy')
+  }
+  delete merged.amountCents
+  return merged as unknown as PaymentDetail
+}
+
 export const addPayment = async (payment: PaymentFormData, userId: number): Promise<void> => {
   await db.query(
     `INSERT INTO payment (
