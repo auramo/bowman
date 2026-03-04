@@ -10,7 +10,7 @@ dist-server
 .tmp
 .env
 data-to-import
-
+infra/inventory.ini
 yarn-error.log
 legacy-data-migration/work/expenses.json
 legacy-data-migration/work/payers.json
