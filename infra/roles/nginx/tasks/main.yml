@@ -1,0 +1,27 @@
+---
+- name: Install nginx
+  apt:
+    name: nginx
+    state: present
+    update_cache: true
+
+- name: Template site config
+  template:
+    src: bowman.conf.j2
+    dest: /etc/nginx/sites-available/bowman
+    mode: "0644"
+  notify: Reload nginx
+
+- name: Enable site
+  file:
+    src: /etc/nginx/sites-available/bowman
+    dest: /etc/nginx/sites-enabled/bowman
+    state: link
+  notify: Reload nginx
+
+- name: Remove default site
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: Reload nginx
+

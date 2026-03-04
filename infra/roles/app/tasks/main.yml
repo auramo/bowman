@@ -1,0 +1,46 @@
+---
+- name: Create /opt/bowman directory
+  file:
+    path: /opt/bowman
+    state: directory
+    mode: "0755"
+
+- name: Create pgdata directory
+  file:
+    path: /opt/bowman/pgdata
+    state: directory
+    mode: "0755"
+
+- name: Copy .env file to server
+  copy:
+    src: "{{ playbook_dir }}/../.env"
+    dest: /opt/bowman/.env
+    mode: "0600"
+  notify: Restart bowman
+
+- name: Template compose.yml
+  template:
+    src: compose.yml.j2
+    dest: /opt/bowman/compose.yml
+    mode: "0644"
+  notify: Restart bowman
+
+- name: Log in to Docker Hub
+  command: podman login docker.io -u {{ dockerhub_username }} -p {{ dockerhub_password }}
+
+- name: Pull latest image
+  command: podman pull docker.io/auramo2/auramos-docker-repository:latest
+
+- name: Install bowman systemd service
+  template:
+    src: bowman.service.j2
+    dest: /etc/systemd/system/bowman.service
+    mode: "0644"
+  notify: Restart bowman
+
+- name: Enable and start bowman service
+  systemd:
+    name: bowman
+    enabled: true
+    state: started
+    daemon_reload: true

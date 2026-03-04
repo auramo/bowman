@@ -1,0 +1,23 @@
+version: "3.8"
+services:
+    postgres:
+        image: "docker.io/library/postgres:18.3"
+        environment:
+            - POSTGRES_DB=bowman
+            - POSTGRES_USER=bowman
+            - POSTGRES_PASSWORD=bowman
+        volumes:
+            - /opt/bowman/pgdata:/var/lib/postgresql
+    web:
+        depends_on:
+            - postgres
+        image: "docker.io/auramo2/auramos-docker-repository:latest"
+        ports:
+            - "127.0.0.1:8080:8080"
+        env_file: .env
+        environment:
+            - PGHOST=postgres
+            - PGPORT=5432
+            - PGDATABASE=bowman
+            - PGUSER=bowman
+            - PGPASSWORD=bowman

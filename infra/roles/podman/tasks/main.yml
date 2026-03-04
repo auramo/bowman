@@ -1,0 +1,11 @@
+---
+- name: Install podman
+  apt:
+    name: podman
+    state: present
+    update_cache: true
+
+- name: Install podman-compose
+  apt:
+    name: podman-compose
+    state: present
