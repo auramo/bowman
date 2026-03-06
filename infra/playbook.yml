@@ -4,7 +4,7 @@
   become: true
 
   vars:
-    domain: talous-demo.perttuauramo.com
+    domain: talous.perttuauramo.com
     certbot_email: "{{ lookup('env', 'CERTBOT_EMAIL') | default('you@example.com', true) }}"
     dockerhub_username: "{{ lookup('env', 'DOCKERHUB_USERNAME') }}"
     dockerhub_password: "{{ lookup('env', 'DOCKERHUB_PASSWORD') }}"

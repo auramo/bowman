@@ -9,7 +9,7 @@
 
 - name: Obtain SSL certificate
   command: >
-    certbot certonly --standalone
+    certbot certonly --nginx
     -d {{ domain }}
     --non-interactive
     --agree-tos
