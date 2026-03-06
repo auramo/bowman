@@ -53,14 +53,21 @@
   position: relative;
 }
 
-.b__date-picker-hidden {
+.b__date-picker-btn-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.b__date-picker-overlay {
   position: absolute;
-  width: 0;
-  height: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   opacity: 0;
-  overflow: hidden;
+  cursor: pointer;
 }
 
 .b__date-picker-btn {
-  flex-shrink: 0;
+  pointer-events: none;
 }
