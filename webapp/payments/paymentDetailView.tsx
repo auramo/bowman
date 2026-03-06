@@ -87,6 +87,8 @@ interface PaymentDetailViewState {
 }
 
 export default class PaymentDetailView extends React.PureComponent<PaymentDetailViewProps, PaymentDetailViewState> {
+  private datePickerRef: HTMLInputElement | null = null
+
   constructor(props: PaymentDetailViewProps) {
     super(props)
     this.state = {
@@ -238,17 +240,45 @@ export default class PaymentDetailView extends React.PureComponent<PaymentDetail
                 </div>
                 <div className={formGroupClassName(validDate, this.state.payment.paymentDate)}>
                   <label className="form-label">Päivä</label>
-                  <input
-                    className="form-input"
-                    type="text"
-                    placeholder="PP.KK.VVVV"
-                    value={this.state.payment.paymentDate}
-                    onChange={newVal =>
-                      this.setState({
-                        payment: { ...this.state.payment, paymentDate: newVal.target.value }
-                      })
-                    }
-                  />
+                  <div className="b__date-input-row">
+                    <input
+                      className="form-input"
+                      type="text"
+                      placeholder="PP.KK.VVVV"
+                      value={this.state.payment.paymentDate}
+                      onChange={newVal =>
+                        this.setState({
+                          payment: { ...this.state.payment, paymentDate: newVal.target.value }
+                        })
+                      }
+                    />
+                    <input
+                      type="date"
+                      className="b__date-picker-hidden"
+                      ref={el => { this.datePickerRef = el }}
+                      onChange={evt => {
+                        const val = evt.target.value
+                        if (val) {
+                          const [y, m, d] = val.split('-')
+                          this.setState({
+                            payment: { ...this.state.payment, paymentDate: `${d}.${m}.${y}` }
+                          })
+                        }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-action b__date-picker-btn"
+                      onClick={() => this.datePickerRef?.showPicker()}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                        <line x1="16" y1="2" x2="16" y2="6" />
+                        <line x1="8" y1="2" x2="8" y2="6" />
+                        <line x1="3" y1="10" x2="21" y2="10" />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
                 <label className="form-label">Lisätiedot</label>
                 <textarea
