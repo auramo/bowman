@@ -13,7 +13,7 @@
 
 - name: Copy .env file to server
   copy:
-    src: "{{ playbook_dir }}/../.env"
+    src: "{{ playbook_dir }}/.env"
     dest: /opt/bowman/.env
     mode: "0600"
   notify: Restart bowman
